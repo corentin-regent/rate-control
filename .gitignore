@@ -1,0 +1,11 @@
+__pycache__
+
+dist
+poetry.lock
+
+.coverage
+docs/_build
+htmlcov
+.mypy_cache
+.pytest_cache
+.ruff_cache

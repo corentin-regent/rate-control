@@ -1,0 +1,5 @@
+First request passes
+Second request passes
+First bucket is empty
+New request passes after replenishment
+Now second bucket is empty

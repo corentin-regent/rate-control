@@ -1,0 +1,16 @@
+{
+    "autoDocstring.docstringFormat": "google-notypes",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportImplicitOverride": "warning",
+        "reportMissingTypeStubs": "none",
+        "reportShadowedImports": "none",
+        "reportUnusedImport": "warning",
+        "reportUnusedVariable": "warning"
+    },
+    "python.analysis.typeCheckingMode": "strict",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+}
