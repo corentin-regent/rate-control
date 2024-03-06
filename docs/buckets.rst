@@ -1,8 +1,6 @@
 Bucket algorithms
 =================
 
-.. _`fixed-window-counter`:
-
 :class:`.FixedWindowCounter`
 ----------------------------
 

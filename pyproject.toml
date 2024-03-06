@@ -6,6 +6,7 @@ authors = ["Corentin Régent <corentin.regent.pro@gmail.com>"]
 
 license = "MIT"
 repository = "https://github.com/corentin-regent/rate-control"
+documentation = 'https://rate-control.readthedocs.io/'
 readme = "README.rst"
 packages = [{include = "rate_control"}]
 
@@ -35,6 +36,8 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[tool.poetry.urls]
+Changelog = "https://rate-control.readthedocs.io/en/latest/changelog.html"
 
 [tool.poetry.dependencies]
 python = "^3.8"

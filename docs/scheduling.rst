@@ -39,6 +39,8 @@ to :meth:`~rate_control.Scheduler.schedule`.
 The :exc:`.RateLimit` exception will be raised if the request
 cannot be processed instantly.
 
+.. _prioritization:
+
 Request prioritization
 ----------------------
 

@@ -7,22 +7,16 @@ Rate Control
 Key Features
 ------------
 
-* Rate limiting
-* Scheduling requests
-* Request synchronization
-* Request prioritization
-* Chaining buckets
+* :ref:`Rate limiting <rate-limiting>`
+* :doc:`Scheduling requests </scheduling>`
+* :doc:`Request synchronization </synchronization>`
+* :ref:`Request prioritization <prioritization>`
+* :doc:`Chaining buckets </bucket-groups>`
 * Support for both asyncio_ and Trio_, through AnyIO_
-* Support for task cancellation
 
 .. _AnyIO: https://github.com/agronholm/anyio
 .. _asyncio: https://docs.python.org/3/library/asyncio.html
 .. _Trio: https://github.com/python-trio/trio
-
-Contributing
-------------
-
-Contributions are very welcome. Please read :doc:`Contributing </contributing>` for details.
 
 
 .. toctree::

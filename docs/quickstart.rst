@@ -13,6 +13,8 @@ you can install it using pip:
 
     pip install rate-control
 
+.. _rate-limiting:
+
 Basic usage
 -----------
 
