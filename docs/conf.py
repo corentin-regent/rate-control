@@ -1,11 +1,19 @@
 import os
 import sys
+from importlib.metadata import version as get_version
+
+from packaging.version import parse
 
 sys.path.append(os.path.abspath('..'))
 
 project = 'Rate Control'
 author = 'Corentin Régent'
 copyright = f'2024, {author}'
+
+v = parse(get_version('rate-control'))
+version = v.base_version
+release = v.public
+
 repository = 'https://github.com/corentin-regent/rate-control'
 
 root_doc = 'index'
