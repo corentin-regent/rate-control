@@ -23,7 +23,7 @@ class UnlimitedBucket(Bucket):
 
     @override
     def acquire(self, tokens: float = 1) -> None:
-        pass
+        """Acquiring tokens from an unlimited bucket has no effect."""
 
     @override
     async def wait_for_refill(self) -> None:

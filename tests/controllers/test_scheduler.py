@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 import pytest
 from aiofastforward import FastForward
-from anyio import create_task_group, move_on_after
+from anyio import create_task_group
 from anyio.abc import TaskGroup
 from anyio.lowlevel import checkpoint
 
@@ -196,9 +196,7 @@ async def test_cancel_pending_task(
     task_group: TaskGroup,
     fast_forward: FastForward,
 ) -> None:
-    with move_on_after(1):
-        async with scheduler.schedule(cost=capacity):
-            pass
+    await scheduler.schedule(cost=capacity).__aenter__()
     schedule_to_cancel, to_cancel_called = _prepare_request(scheduler)
     schedule_other, other_called = _prepare_request(scheduler)
 

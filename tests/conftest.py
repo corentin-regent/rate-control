@@ -1,4 +1,4 @@
-import random
+import secrets
 import sys
 from asyncio import get_running_loop
 from unittest.mock import AsyncMock, Mock
@@ -50,7 +50,7 @@ def mock_buckets() -> Sequence[Mock]:
 
 @pytest.fixture
 def mock_bucket(mock_buckets: Sequence[Mock]) -> Mock:
-    return random.choice(mock_buckets)
+    return secrets.choice(mock_buckets)
 
 
 @pytest.fixture

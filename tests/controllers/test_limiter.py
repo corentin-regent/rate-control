@@ -63,8 +63,7 @@ async def test_max_concurrency(rate_limiter: RateLimiter, mock_bucket: Mock, max
 
         assert rate_limiter.can_acquire()
         with assert_not_raises():
-            with rate_limiter.hold():
-                pass
+            rate_limiter.hold().__enter__()
 
 
 @pytest.mark.anyio
