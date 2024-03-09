@@ -24,10 +24,6 @@ jobs:
     runs-on: ${{ inputs.os }}
     timeout-minutes: ${{ inputs.timeout }}
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,11 +31,13 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          os: ${{ inputs.os }}
           python-version: ${{ inputs.python-version }}
 
       - name: Install test dependencies
         run: poetry install --no-interaction --no-root --only test
+
+      - name: Install coverage dependencies
+        run: poetry install --no-interaction --no-root --only coverage
 
       - name: Run tests
         if: ${{ !inputs.coverage }}

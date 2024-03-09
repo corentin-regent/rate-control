@@ -46,9 +46,11 @@ typing_extensions = {version = "^4.4", python = "<3.12"}
 
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.6"
 pre-commit = "^3"
 ruff = "^0.2"
+
+[tool.poetry.group.type-check.dependencies]
+mypy = "^1.6"
 
 [tool.poetry.group.test.dependencies]
 aiofastforward = "^0.0.26"
