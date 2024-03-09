@@ -34,10 +34,10 @@ jobs:
           python-version: ${{ inputs.python-version }}
 
       - name: Install test dependencies
-        run: poetry install --no-interaction --no-root --only test
+        run: poetry install --no-interaction --no-root --with test --without dev
 
       - name: Install coverage dependencies
-        run: poetry install --no-interaction --no-root --only coverage
+        run: poetry install --no-interaction --no-root --with coverage --without dev
 
       - name: Run tests
         if: ${{ !inputs.coverage }}
