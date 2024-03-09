@@ -9,6 +9,9 @@ jobs:
     name: Type check
     runs-on: ubuntu-latest
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Setup
         uses: ./.github/workflows/setup.yml
         with:

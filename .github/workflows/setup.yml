@@ -1,4 +1,4 @@
-name: Setup
+name: Setup Python & Poetry
 
 on:
   workflow_call:
@@ -14,9 +14,6 @@ jobs:
   setup:
     runs-on: ${{ inputs.os }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
       - name: Install Poetry
         uses: snok/install-poetry@v1
 

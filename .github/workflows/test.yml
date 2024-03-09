@@ -29,6 +29,9 @@ jobs:
         shell: bash
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Setup
         uses: ./.github/workflows/setup.yml
         with:
