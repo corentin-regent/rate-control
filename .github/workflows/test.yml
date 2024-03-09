@@ -18,19 +18,19 @@ on:
         type: number
         default: 10
 
-env:
-  artifact-name: coverage-${{ inputs.python-version }}
-  coverage-filename: ${{ env.artifact-name }}.xml
-
 jobs:
   test:
     name: Test (Python ${{ inputs.python-version }})
     runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ timeout }}
+    timeout-minutes: ${{ inputs.timeout }}
 
     defaults:
       run:
         shell: bash
+
+    env:
+      artifact-name: coverage-${{ inputs.python-version }}
+      coverage-filename: ${{ env.artifact-name }}.xml
 
     steps:
       - name: Setup
