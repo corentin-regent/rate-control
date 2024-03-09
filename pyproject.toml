@@ -3,12 +3,12 @@ name = "rate-control"
 version = "1.0.0.dev1"
 description = "Versatile rate controlling in Python"
 authors = ["Corentin Régent <corentin.regent.pro@gmail.com>"]
-
 license = "MIT"
+
+homepage = "https://github.com/corentin-regent/rate-control"
 repository = "https://github.com/corentin-regent/rate-control"
-documentation = 'https://rate-control.readthedocs.io/'
+documentation = "https://rate-control.readthedocs.io/"
 readme = "README.rst"
-packages = [{include = "rate_control"}]
 
 keywords = [
     "async",
@@ -78,6 +78,9 @@ branch = true
 [tool.mypy]
 strict = true
 enable_error_code = "explicit-override"
+
+[[tool.mypy.overrides]]
+module = ['aiofastforward.*']
 ignore_missing_imports = true
 
 [tool.ruff]
