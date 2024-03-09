@@ -28,10 +28,6 @@ jobs:
       run:
         shell: bash
 
-    env:
-      artifact-name: coverage-${{ inputs.python-version }}
-      coverage-filename: ${{ env.artifact-name }}.xml
-
     steps:
       - name: Setup
         uses: ./.github/workflows/setup.yml
@@ -52,11 +48,11 @@ jobs:
 
       - name: Generate coverage report
         if: inputs.coverage
-        run: poetry run coverage xml -o ${{ env.coverage-filename }}
+        run: poetry run coverage xml -o coverage-${{ inputs.python-version }}.xml
 
       - name: Upload artifact
         if: inputs.coverage
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.artifact-name }}
-          path: ${{ env.coverage-filename }}
+          name: coverage-${{ inputs.python-version }}
+          path: coverage-${{ inputs.python-version }}.xml
