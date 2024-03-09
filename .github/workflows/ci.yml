@@ -21,8 +21,10 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --no-root --with type-check --without dev
 
-      - name: Run type checking
-        run: poetry run mypy .
+      - uses: tsuyoshicho/action-mypy@v4
+        with:
+          execute_command: poetry run mypy
+          fail_on_error: true
 
   test:
     name: Run tests
