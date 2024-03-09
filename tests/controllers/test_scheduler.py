@@ -14,9 +14,8 @@ from rate_control import Bucket, Priority, RateLimit, ReachedMaxPending, Schedul
 from tests import assert_not_raises, checkpoints
 
 if sys.version_info >= (3, 9):
+    from builtins import tuple as Tuple
     from collections.abc import AsyncIterator, Awaitable, Callable
-
-    Tuple = tuple
 else:
     from typing import AsyncIterator, Awaitable, Callable, Tuple
 
