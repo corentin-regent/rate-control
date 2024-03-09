@@ -19,11 +19,12 @@ jobs:
           python-version: "3.8"
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --only type-check
+        run: poetry install --no-interaction --no-root --with type-check
 
       - uses: tsuyoshicho/action-mypy@v4
         with:
           execute_command: poetry run mypy
+          fail_on_error: true
 
   test:
     name: Run tests
