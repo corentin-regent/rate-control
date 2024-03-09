@@ -7,7 +7,7 @@ Rate Control
 Documentation
 =============
 
-Full documention can be found at: https://rate-control.readthedocs.io/
+Full documention can be found at https://rate-control.readthedocs.io/
 
 Key Features
 ============

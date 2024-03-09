@@ -20,7 +20,7 @@ on:
 
 jobs:
   test:
-    name: Test (Python ${{ inputs.python-version }})
+    name: Test (${{ inputs.python-version }})
     runs-on: ${{ inputs.os }}
     timeout-minutes: ${{ inputs.timeout }}
 
