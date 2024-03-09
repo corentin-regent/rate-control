@@ -45,7 +45,7 @@ jobs:
 
       - name: Run tests with coverage
         if: inputs.coverage
-        run: poetry run coverage -m pytest tests/
+        run: poetry run coverage run -m pytest tests/
 
       - name: Generate coverage report
         if: inputs.coverage
