@@ -1,0 +1,62 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      coverage:
+        required: false
+        type: boolean
+        default: false
+      os:
+        required: true
+        type: string
+      python-version:
+        required: true
+        type: string
+      timeout:
+        required: false
+        type: number
+        default: 10
+
+env:
+  artifact-name: coverage-${{ inputs.python-version }}
+  coverage-filename: ${{ env.artifact-name }}.xml
+
+jobs:
+  test:
+    name: Test (Python ${{ inputs.python-version }})
+    runs-on: ${{ inputs.os }}
+    timeout-minutes: ${{ timeout }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Setup
+        uses: ./.github/workflows/setup.yml
+        with:
+          os: ${{ inputs.os }}
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install test dependencies
+        run: poetry install --no-interaction --no-root --only test
+
+      - name: Run tests
+        if: ${{ !inputs.coverage }}
+        run: poetry run pytest tests/
+
+      - name: Run tests with coverage
+        if: inputs.coverage
+        run: poetry run coverage -m pytest tests/
+
+      - name: Generate coverage report
+        if: inputs.coverage
+        run: poetry run coverage xml -o ${{ env.coverage-filename }}
+
+      - name: Upload artifact
+        if: inputs.coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.artifact-name }}
+          path: ${{ env.coverage-filename }}

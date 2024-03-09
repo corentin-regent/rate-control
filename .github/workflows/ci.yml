@@ -1,0 +1,59 @@
+name: CI Workflow
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup
+        uses: ./.github/workflows/setup.yml
+        with:
+          os: ubuntu-latest
+          python-version: "3.8"
+
+      - uses: tsuyoshicho/action-mypy@v4
+        with:
+          execute_command: poetry run mypy
+
+  test:
+    name: Run tests
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+
+    uses: ./.github/workflows/test.yml
+    with:
+      coverage: true
+      os: ubuntu-latest
+      python-version: ${{ matrix.python-version }}
+
+  sonar:
+    name: Upload to SonarCloud
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download test artifacts
+        uses: actions/download-artifact@v3
+        with:
+          pattern: coverage-*
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
