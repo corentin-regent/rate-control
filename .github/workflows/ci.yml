@@ -16,7 +16,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          python-version: "3.8"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: poetry install --no-interaction --no-root --with type-check
