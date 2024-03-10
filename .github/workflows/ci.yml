@@ -60,6 +60,9 @@ jobs:
         with:
           pattern: coverage-*
 
+      - name: debug downloaded artifacts
+        run: ls -la
+
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
         env:
