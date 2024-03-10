@@ -48,13 +48,9 @@ jobs:
         if: inputs.coverage
         run: poetry run coverage run -m pytest -v tests/
 
-      - name: Generate coverage report
-        if: inputs.coverage
-        run: poetry run coverage xml -o coverage-${{ inputs.python-version }}.xml
-
-      - name: Upload artifact
+      - name: Upload coverage artifact
         if: inputs.coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ inputs.python-version }}
-          path: coverage-${{ inputs.python-version }}.xml
+          path: .coverage
