@@ -55,6 +55,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --only coverage
+
       - name: Download test artifacts
         uses: actions/download-artifact@v4
         with:
