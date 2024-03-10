@@ -48,18 +48,9 @@ jobs:
         if: inputs.coverage
         run: poetry run coverage run -m pytest -v tests/
 
-      - name: Generate coverage report
-        if: inputs.coverage
-        run: poetry run coverage xml -i
-
-      - name: Fix coverage report paths
-        if: inputs.coverage
-        # see https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
-        run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
-
       - name: Upload coverage artifact
         if: inputs.coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ inputs.python-version }}
-          path: coverage.xml
+          path: .coverage
