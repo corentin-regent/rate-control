@@ -77,6 +77,10 @@ sphinx-autodoc-typehints = "^1.21.2"
 [tool.coverage.run]
 branch = true
 
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
 [tool.mypy]
 strict = true
 enable_error_code = "explicit-override"
