@@ -5,7 +5,10 @@ from io import StringIO
 from pathlib import Path
 from typing import Any
 
+import pytest
 
+
+@pytest.mark.slow
 def test_examples(subtests: Any) -> None:
     examples_path = Path('docs/examples')
     for python_file in examples_path.glob('*.py'):

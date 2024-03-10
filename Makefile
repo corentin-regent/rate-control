@@ -20,9 +20,13 @@ type-check:
 test:
 	@poetry run pytest -v tests/
 
+.PHONY: test-runslow
+test-runslow:
+	@poetry run pytest -v --runslow tests/
+
 .PHONY: coverage
 coverage:
-	@poetry run coverage run -m pytest -v tests/
+	@poetry run coverage run -m pytest -v --runslow tests/
 	@poetry run coverage html
 
 .PHONY: docs

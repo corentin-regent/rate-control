@@ -43,6 +43,7 @@ jobs:
       coverage: ${{ matrix.python-version == '3.12' || matrix.python-version == '3.8' }}
       os: ubuntu-latest
       python-version: ${{ matrix.python-version }}
+      runslow: ${{ matrix.python-version == '3.12' }}
 
   sonar:
     name: Upload to SonarCloud

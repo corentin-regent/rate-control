@@ -7,6 +7,7 @@ import pytest
 from aiofastforward import FastForward
 from anyio import create_task_group
 from anyio.abc import TaskGroup
+from pytest import Function, Parser
 
 from rate_control import Bucket
 from rate_control.buckets import FixedWindowCounter
@@ -15,6 +16,15 @@ if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator, Sequence
 else:
     from typing import AsyncIterator, Sequence
+
+
+def pytest_addoption(parser: Parser) -> None:
+    parser.addoption('--runslow', action='store_true', help='Run slow tests')
+
+
+def pytest_runtest_setup(item: Function) -> None:
+    if 'slow' in item.keywords and not item.config.getoption('--runslow'):
+        pytest.skip('Need --runslow option to run this test')
 
 
 @pytest.fixture(scope='module')

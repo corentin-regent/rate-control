@@ -13,6 +13,10 @@ on:
       python-version:
         required: true
         type: string
+      runslow:
+        required: false
+        type: boolean
+        default: false
       timeout:
         required: false
         type: number
@@ -41,12 +45,20 @@ jobs:
         run: poetry install --no-interaction --no-root --with coverage
 
       - name: Run tests
-        if: ${{ !inputs.coverage }}
+        if: ${{ !inputs.coverage && !inputs.runslow }}
         run: poetry run pytest -v tests/
 
+      - name: Run tests including slow
+        if: ${{ !inputs.coverage && inputs.runslow }}
+        run: poetry run pytest -v --runslow tests/
+
       - name: Run tests with coverage
-        if: inputs.coverage
+        if: ${{ inputs.coverage && !inputs.runslow }}
         run: poetry run coverage run -m pytest -v tests/
+
+      - name: Run tests including slow, with coverage
+        if: ${{ inputs.coverage && inputs.runslow }}
+        run: poetry run coverage run -m pytest -v --runslow tests/
 
       - name: Upload coverage artifact
         if: inputs.coverage

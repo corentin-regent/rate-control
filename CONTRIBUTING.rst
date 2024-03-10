@@ -26,12 +26,17 @@ Running tests
 
 Tests can be run with pytest using ``make test``.
 
+Some tests are marked as *slow*. By default they are not executed.
+you can run them using ``make test-runslow``.
+
 Test coverage
 ^^^^^^^^^^^^^
 
 You can check your test coverage locally by using the
 `coverage <https://coverage.readthedocs.io/>`_ package
 through ``make coverage``.
+
+All the tests will be run, including the slow ones.
 
 An HTML report will be generated in the ``htmlcov`` directory
 at the root of the project, highlighting which lines
