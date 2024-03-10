@@ -20,7 +20,7 @@ Usage
 Here is how the :class:`.Scheduler` can be used:
 
 .. literalinclude:: examples/scheduler.py
-.. literalinclude:: examples/scheduler.out.txt
+.. literalinclude:: examples/scheduler.out
     :language: text
     :caption: Output
 

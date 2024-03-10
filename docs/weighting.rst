@@ -8,6 +8,6 @@ than for lightweight ones.
 Here is how you can specify a cost for each request with Rate Control:
 
 .. literalinclude:: examples/weighting_requests.py
-.. literalinclude:: examples/weighting_requests.out.txt
+.. literalinclude:: examples/weighting_requests.out
     :language: text
     :caption: Output

@@ -22,7 +22,7 @@ Shorter periods of time are used so that you can run this example at home:
 * 3 requests are allowed over each 2-second window.
 
 .. literalinclude:: examples/bucket_group.py
-.. literalinclude:: examples/bucket_group.out.txt
+.. literalinclude:: examples/bucket_group.out
     :language: text
     :caption: Output
 

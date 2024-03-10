@@ -9,7 +9,7 @@ from typing import Any
 def test_examples(subtests: Any) -> None:
     examples_path = Path('docs/examples')
     for python_file in examples_path.glob('*.py'):
-        expected_output_file = python_file.with_suffix('.out.txt')
+        expected_output_file = python_file.with_suffix('.out')
         module_name = str(python_file.with_suffix('')).replace(os.path.sep, '.')
         with open(expected_output_file) as f:
             expected = f.read()

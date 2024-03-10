@@ -8,6 +8,6 @@ For this purpose, a ``max_concurrency`` parameter
 can be specified to the rate controller:
 
 .. literalinclude:: examples/max_concurrency.py
-.. literalinclude:: examples/max_concurrency.out.txt
+.. literalinclude:: examples/max_concurrency.out
     :language: text
     :caption: Output

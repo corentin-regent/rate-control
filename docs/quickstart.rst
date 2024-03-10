@@ -39,7 +39,7 @@ to ensure that no more than two requests are handled each minute.
     on the :doc:`dedicated page </buckets>`.
 
 .. literalinclude:: examples/rate_limiter.py
-.. literalinclude:: examples/rate_limiter.out.txt
+.. literalinclude:: examples/rate_limiter.out
     :language: text
     :caption: Output
 
