@@ -37,15 +37,16 @@ jobs:
         run: poetry install --no-interaction --no-root --with test --without dev
 
       - name: Install coverage dependencies
+        if: inputs.coverage
         run: poetry install --no-interaction --no-root --with coverage --without dev
 
       - name: Run tests
         if: ${{ !inputs.coverage }}
-        run: poetry run pytest tests/
+        run: poetry run pytest -v tests/
 
       - name: Run tests with coverage
         if: inputs.coverage
-        run: poetry run coverage run -m pytest tests/
+        run: poetry run coverage run -m pytest -v tests/
 
       - name: Generate coverage report
         if: inputs.coverage
