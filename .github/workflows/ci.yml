@@ -40,7 +40,7 @@ jobs:
 
     uses: ./.github/workflows/test.yml
     with:
-      coverage: true
+      coverage: ${{ matrix.python-version == '3.12' || matrix.python-version == '3.8' }}
       os: ubuntu-latest
       python-version: ${{ matrix.python-version }}
 
@@ -69,14 +69,14 @@ jobs:
           pattern: coverage-*
 
       - name: Combine coverage files
-        run: find . -maxdepth 1 -name "coverage-*" | xargs poetry run coverage combine
+        run: poetry run coverage combine coverage-*/.coverage
 
       - name: Generate coverage report
         run: poetry run coverage xml -i
 
       - name: Fix coverage source
         # see https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
-        run: sed -i "s/home\/runner\/work\/corentin-regent\/corentin-regent/github\/workspace/g" coverage.xml
+        run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
