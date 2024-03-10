@@ -74,6 +74,10 @@ jobs:
       - name: Generate coverage report
         run: poetry run coverage xml -i
 
+      - name: Fix coverage source
+        # see https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
+        run: sed -i "s/home\/runner\/work\/corentin-regent\/corentin-regent/github\/workspace/g" coverage.xml
+
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@v2
         env:
