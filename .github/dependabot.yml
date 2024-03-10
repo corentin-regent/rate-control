@@ -1,7 +1,13 @@
 version: 2
 updates:
-  # Maintain Python dependencies up to date
+  # Python
   - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
