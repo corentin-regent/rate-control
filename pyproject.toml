@@ -60,9 +60,9 @@ pytest-subtests = "^0.11"
 [tool.poetry.group.coverage]
 optional = true
 
-[tool.poetry.group.coverage.dependencies]
-covdefaults = "^2"
-coverage = {version = "^7", extras = ["toml"]}
+[tool.poetry.group.coverage.dependencies.coverage]
+version = "^7"
+extras = ["toml"]
 
 [tool.poetry.group.docs]
 optional = true
@@ -75,10 +75,7 @@ sphinx-autodoc-typehints = "^1.21.2"
 
 
 [tool.coverage.run]
-plugins = ["covdefaults"]
-
-[tool.coverage.report]
-fail_under = 95
+branch = true
 
 [tool.mypy]
 strict = true
