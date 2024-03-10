@@ -4,7 +4,7 @@ from rate_control.buckets import FixedWindowCounter
 
 async def schedule_print(scheduler: Scheduler, start_time: float) -> None:
     async with scheduler.schedule():
-        print(f'Elapsed: {current_time() - start_time :.2f} seconds')
+        print(f'Elapsed: {current_time() - start_time :.1f} seconds')
 
 async def main() -> None:
     async with FixedWindowCounter(capacity=2, duration=Duration.SECOND) as bucket, \
