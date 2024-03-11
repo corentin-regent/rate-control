@@ -29,8 +29,7 @@ def test_examples(subtests: Any) -> None:
 
 
 def _python_and_output_files() -> Iterator[Tuple[Path, Path]]:
-    root_path = Path('docs/examples')
-    for output_file in root_path.glob('*.out'):
+    for output_file in Path('docs/examples').glob('**/*.out'):
         for lib in ('asyncio', 'trio', 'anyio'):
-            python_file = root_path / lib / output_file.name.replace('.out', '.py')
+            python_file = Path(f"{output_file.with_suffix('')}_{lib}.py")
             yield python_file, output_file

@@ -40,13 +40,13 @@ to ensure that no more than two requests are handled each minute.
 
 .. tabs::
     .. group-tab:: Asyncio
-        .. literalinclude:: examples/asyncio/rate_limiter.py
+        .. literalinclude:: examples/rate_limiter/rate_limiter_asyncio.py
     .. group-tab:: Trio
-        .. literalinclude:: examples/trio/rate_limiter.py
+        .. literalinclude:: examples/rate_limiter/rate_limiter_trio.py
     .. group-tab:: AnyIO
-        .. literalinclude:: examples/anyio/rate_limiter.py
+        .. literalinclude:: examples/rate_limiter/rate_limiter_anyio.py
 
-.. literalinclude:: examples/rate_limiter.out
+.. literalinclude:: examples/rate_limiter/rate_limiter.out
     :language: text
     :caption: Output
 

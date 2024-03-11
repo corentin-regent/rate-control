@@ -23,13 +23,13 @@ Shorter periods of time are used so that you can run this example at home:
 
 .. tabs::
     .. group-tab:: Asyncio
-        .. literalinclude:: examples/asyncio/bucket_group.py
+        .. literalinclude:: examples/bucket_group/bucket_group_asyncio.py
     .. group-tab:: Trio
-        .. literalinclude:: examples/trio/bucket_group.py
+        .. literalinclude:: examples/bucket_group/bucket_group_trio.py
     .. group-tab:: AnyIO
-        .. literalinclude:: examples/anyio/bucket_group.py
+        .. literalinclude:: examples/bucket_group/bucket_group_anyio.py
 
-.. literalinclude:: examples/bucket_group.out
+.. literalinclude:: examples/bucket_group/bucket_group.out
     :language: text
     :caption: Output
 

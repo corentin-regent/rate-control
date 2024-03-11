@@ -21,13 +21,13 @@ Here is how the :class:`.Scheduler` can be used:
 
 .. tabs::
     .. group-tab:: Asyncio
-        .. literalinclude:: examples/asyncio/scheduler.py
+        .. literalinclude:: examples/scheduler/scheduler_asyncio.py
     .. group-tab:: Trio
-        .. literalinclude:: examples/trio/scheduler.py
+        .. literalinclude:: examples/scheduler/scheduler_trio.py
     .. group-tab:: AnyIO
-        .. literalinclude:: examples/anyio/scheduler.py
+        .. literalinclude:: examples/scheduler/scheduler_anyio.py
 
-.. literalinclude:: examples/scheduler.out
+.. literalinclude:: examples/scheduler/scheduler.out
     :language: text
     :caption: Output
 

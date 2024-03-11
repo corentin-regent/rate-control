@@ -9,12 +9,12 @@ can be specified to the rate controller:
 
 .. tabs::
     .. group-tab:: Asyncio
-        .. literalinclude:: examples/asyncio/max_concurrency.py
+        .. literalinclude:: examples/max_concurrency/max_concurrency_asyncio.py
     .. group-tab:: Trio
-        .. literalinclude:: examples/trio/max_concurrency.py
+        .. literalinclude:: examples/max_concurrency/max_concurrency_trio.py
     .. group-tab:: AnyIO
-        .. literalinclude:: examples/anyio/max_concurrency.py
+        .. literalinclude:: examples/max_concurrency/max_concurrency_anyio.py
 
-.. literalinclude:: examples/max_concurrency.out
+.. literalinclude:: examples/max_concurrency/max_concurrency.out
     :language: text
     :caption: Output
