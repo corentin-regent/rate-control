@@ -48,6 +48,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',
     'enum_tools.autoenum',
+    'sphinx_tabs.tabs',
 ]
 
 napoleon_google_docstring = True
@@ -72,6 +73,8 @@ autodoc_typehints_format = 'short'
 autodoc_preserve_defaults = True
 autodoc_warningiserror = True
 autodoc_inherit_docstrings = True
+
+sphinx_tabs_disable_tab_closing = True
 
 typehints_document_rtype = False
 typehints_use_signature = True

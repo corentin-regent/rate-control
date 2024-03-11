@@ -38,7 +38,14 @@ to ensure that no more than two requests are handled each minute.
     All available bucket algorithms are explained
     on the :doc:`dedicated page </buckets>`.
 
-.. literalinclude:: examples/rate_limiter.py
+.. tabs::
+    .. group-tab:: Asyncio
+        .. literalinclude:: examples/asyncio/rate_limiter.py
+    .. group-tab:: Trio
+        .. literalinclude:: examples/trio/rate_limiter.py
+    .. group-tab:: AnyIO
+        .. literalinclude:: examples/anyio/rate_limiter.py
+
 .. literalinclude:: examples/rate_limiter.out
     :language: text
     :caption: Output

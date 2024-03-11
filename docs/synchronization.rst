@@ -7,7 +7,14 @@ of requests running concurrently.
 For this purpose, a ``max_concurrency`` parameter
 can be specified to the rate controller:
 
-.. literalinclude:: examples/max_concurrency.py
+.. tabs::
+    .. group-tab:: Asyncio
+        .. literalinclude:: examples/asyncio/max_concurrency.py
+    .. group-tab:: Trio
+        .. literalinclude:: examples/trio/max_concurrency.py
+    .. group-tab:: AnyIO
+        .. literalinclude:: examples/anyio/max_concurrency.py
+
 .. literalinclude:: examples/max_concurrency.out
     :language: text
     :caption: Output

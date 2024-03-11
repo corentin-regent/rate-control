@@ -19,7 +19,14 @@ Usage
 
 Here is how the :class:`.Scheduler` can be used:
 
-.. literalinclude:: examples/scheduler.py
+.. tabs::
+    .. group-tab:: Asyncio
+        .. literalinclude:: examples/asyncio/scheduler.py
+    .. group-tab:: Trio
+        .. literalinclude:: examples/trio/scheduler.py
+    .. group-tab:: AnyIO
+        .. literalinclude:: examples/anyio/scheduler.py
+
 .. literalinclude:: examples/scheduler.out
     :language: text
     :caption: Output

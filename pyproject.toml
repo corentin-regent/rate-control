@@ -49,6 +49,7 @@ typing_extensions = {version = "^4.4", python = "<3.12"}
 optional = true
 
 [tool.poetry.group.dev.dependencies]
+anyio = {version = "*", extras = ["trio"]}
 pre-commit = "^3"
 ruff = "^0.2"
 
@@ -57,6 +58,7 @@ optional = true
 
 [tool.poetry.group.test.dependencies]
 aiofastforward = "^0.0.26"
+anyio = {version = "*", extras = ["trio"]}
 pytest = "^8"
 pytest-subtests = "^0.11"
 
@@ -81,6 +83,7 @@ enum_tools = {version = "^0.11", extras=["sphinx"]}
 furo = "==2024.01.29"
 sphinx = "^7"
 sphinx-autodoc-typehints = "^1.21.2"
+sphinx-tabs = "^3.4.2"
 
 
 [tool.coverage.run]
