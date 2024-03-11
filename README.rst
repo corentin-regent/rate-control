@@ -4,6 +4,11 @@ Rate Control
 
 *Versatile rate controlling in Python*
 
+:CI/CD: |tests| |type-checking|
+:Package: |python-version| |package-version| |docs| |license|
+:Quality: |coverage| |quality-gate| |maintainability| |reliability|
+:Meta: |type-check| |code-style|
+
 Documentation
 =============
 
@@ -27,3 +32,59 @@ Contributing
 ============
 
 Contributions are very welcome. Please read `CONTRIBUTING </CONTRIBUTING.rst>`_ for details.
+
+
+.. CI/CD:
+
+.. |tests| image:: https://github.com/corentin-regent/rate-control/actions/workflows/test.yml/badge.svg
+  :alt: Tests
+  :target: https://github.com/corentin-regent/rate-control/actions/workflows/test.yml
+
+.. |type-checking| image:: https://github.com/corentin-regent/rate-control/actions/workflows/type-check.yml/badge.svg
+  :alt: Type Checking
+  :target: https://github.com/corentin-regent/rate-control/actions/workflows/type-check.yml
+
+.. Package:
+
+.. |python-version| image:: https://img.shields.io/pypi/pyversions/rate-control?logo=python
+  :alt: Python Versions
+
+.. |package-version| image:: https://img.shields.io/pypi/v/rate-control?logo=python
+  :alt: Package Version
+  :target: https://pypi.org/project/rate-control/
+
+.. |docs| image:: https://readthedocs.org/projects/rate-control/badge/?version=latest
+    :alt: Documentation Status
+    :target: https://rate-control.readthedocs.io/en/latest/
+
+.. |license| image:: https://img.shields.io/pypi/l/rate-control?logo=unlicense
+  :alt: MIT License
+  :target: https://rate-control.readthedocs.io/en/latest/license.html
+
+.. Quality:
+
+.. |coverage| image:: https://img.shields.io/sonar/coverage/corentin-regent_rate-control?server=https%3A%2F%2Fsonarcloud.io&logo=sonarcloud
+  :alt: Code Coverage
+  :target: https://sonarcloud.io/summary/new_code?id=corentin-regent_rate-control
+
+.. |quality-gate| image:: https://sonarcloud.io/api/project_badges/measure?project=corentin-regent_rate-control&metric=alert_status
+  :alt: Quality Gate
+  :target: https://sonarcloud.io/summary/new_code?id=corentin-regent_rate-control
+
+.. |maintainability| image:: https://sonarcloud.io/api/project_badges/measure?project=corentin-regent_rate-control&metric=sqale_rating
+  :alt: Maintainability Rating
+  :target: https://sonarcloud.io/summary/new_code?id=corentin-regent_rate-control
+
+.. |reliability| image:: https://sonarcloud.io/api/project_badges/measure?project=corentin-regent_rate-control&metric=reliability_rating
+  :alt: Reliability Rating
+  :target: https://sonarcloud.io/summary/new_code?id=corentin-regent_rate-control
+
+.. Meta:
+
+.. |type-check| image:: https://www.mypy-lang.org/static/mypy_badge.svg
+  :alt: Type Checked
+  :target: https://mypy-lang.org/
+
+.. |code-style| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+  :alt: Code Style
+  :target: https://github.com/astral-sh/ruff
