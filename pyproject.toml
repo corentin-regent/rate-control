@@ -12,10 +12,9 @@ readme = "README.rst"
 
 keywords = [
     "async",
-    "rate limiter",
-    "rate control",
-    "scheduler",
-    "throttling",
+    "rate limit",
+    "schedule",
+    "throttle",
     "token bucket",
 ]
 
