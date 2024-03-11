@@ -27,32 +27,32 @@ runs:
       run: poetry install --no-interaction --no-root --with test
 
     - name: Install coverage dependencies
-      if: ${{ inputs.coverage }}
+      if: ${{ inputs.coverage == 'true' }}
       shell: bash
       run: poetry install --no-interaction --no-root --with coverage
 
     - name: Run tests
-      if: ${{ !inputs.coverage && !inputs.runslow }}
+      if: ${{ inputs.coverage == 'false' && inputs.runslow == 'false' }}
       shell: bash
       run: poetry run pytest -v tests/
 
     - name: Run tests including slow
-      if: ${{ !inputs.coverage && inputs.runslow }}
+      if: ${{ inputs.coverage == 'false' && inputs.runslow == 'true' }}
       shell: bash
       run: poetry run pytest -v --runslow tests/
 
     - name: Run tests with coverage
-      if: ${{ inputs.coverage && !inputs.runslow }}
+      if: ${{ inputs.coverage == 'true' && inputs.runslow == 'false' }}
       shell: bash
       run: poetry run coverage run -m pytest -v tests/
 
     - name: Run tests including slow, with coverage
-      if: ${{ inputs.coverage && inputs.runslow }}
+      if: ${{ inputs.coverage == 'true' && inputs.runslow == 'true' }}
       shell: bash
       run: poetry run coverage run -m pytest -v --runslow tests/
 
     - name: Upload coverage artifact
-      if: ${{ inputs.coverage }}
+      if: ${{ inputs.coverage == 'true' }}
       uses: actions/upload-artifact@v4
       with:
         name: coverage-${{ inputs.python-version }}
