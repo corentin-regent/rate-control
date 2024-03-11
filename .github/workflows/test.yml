@@ -1,68 +1,72 @@
-name: Test
+name: Tests
 
 on:
-  workflow_call:
-    inputs:
-      coverage:
-        required: false
-        type: boolean
-        default: false
-      os:
-        required: true
-        type: string
-      python-version:
-        required: true
-        type: string
-      runslow:
-        required: false
-        type: boolean
-        default: false
-      timeout:
-        required: false
-        type: number
-        default: 10
+  pull_request:
+  push:
 
 jobs:
   test:
-    name: Test (${{ inputs.python-version }})
-    runs-on: ${{ inputs.os }}
-    timeout-minutes: ${{ inputs.timeout }}
+    name: Test (${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+        os:
+          - ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Run tests
+        uses: ./.github/actions/test
+        with:
+          coverage: ${{ matrix.python-version == '3.12' || matrix.python-version == '3.8' }}
+          python-version: ${{ matrix.python-version }}
+          runslow: ${{ matrix.python-version == '3.12' }}
+
+  sonar:
+    name: Upload to SonarCloud
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Setup
         uses: ./.github/actions/setup
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: "3.12"
 
-      - name: Install test dependencies
-        run: poetry install --no-interaction --no-root --with test
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --only coverage
 
-      - name: Install coverage dependencies
-        if: inputs.coverage
-        run: poetry install --no-interaction --no-root --with coverage
-
-      - name: Run tests
-        if: ${{ !inputs.coverage && !inputs.runslow }}
-        run: poetry run pytest -v tests/
-
-      - name: Run tests including slow
-        if: ${{ !inputs.coverage && inputs.runslow }}
-        run: poetry run pytest -v --runslow tests/
-
-      - name: Run tests with coverage
-        if: ${{ inputs.coverage && !inputs.runslow }}
-        run: poetry run coverage run -m pytest -v tests/
-
-      - name: Run tests including slow, with coverage
-        if: ${{ inputs.coverage && inputs.runslow }}
-        run: poetry run coverage run -m pytest -v --runslow tests/
-
-      - name: Upload coverage artifact
-        if: inputs.coverage
-        uses: actions/upload-artifact@v4
+      - name: Download test artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: coverage-${{ inputs.python-version }}
-          path: .coverage
+          pattern: coverage-*
+
+      - name: Combine coverage files
+        run: poetry run coverage combine coverage-*/.coverage
+
+      - name: Generate coverage report
+        run: poetry run coverage xml -i
+
+      - name: Fix coverage source
+        # see https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
+        run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

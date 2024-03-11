@@ -1,0 +1,59 @@
+name: Test
+description: Run tests
+
+inputs:
+  coverage:
+    description: Whether code coverage should be measured
+    required: false
+    default: "false"
+  python-version:
+    description: The Python version to test with
+    required: true
+  runslow:
+    description: Whether slow tests should be run
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup (${{ inputs.python-version }})
+      uses: ./.github/actions/setup
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install test dependencies
+      shell: bash
+      run: poetry install --no-interaction --no-root --with test
+
+    - name: Install coverage dependencies
+      if: ${{ inputs.coverage }}
+      shell: bash
+      run: poetry install --no-interaction --no-root --with coverage
+
+    - name: Run tests
+      if: ${{ !inputs.coverage && !inputs.runslow }}
+      shell: bash
+      run: poetry run pytest -v tests/
+
+    - name: Run tests including slow
+      if: ${{ !inputs.coverage && inputs.runslow }}
+      shell: bash
+      run: poetry run pytest -v --runslow tests/
+
+    - name: Run tests with coverage
+      if: ${{ inputs.coverage && !inputs.runslow }}
+      shell: bash
+      run: poetry run coverage run -m pytest -v tests/
+
+    - name: Run tests including slow, with coverage
+      if: ${{ inputs.coverage && inputs.runslow }}
+      shell: bash
+      run: poetry run coverage run -m pytest -v --runslow tests/
+
+    - name: Upload coverage artifact
+      if: ${{ inputs.coverage }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-${{ inputs.python-version }}
+        path: .coverage

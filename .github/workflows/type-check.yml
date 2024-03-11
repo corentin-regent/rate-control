@@ -1,0 +1,27 @@
+name: Type Checking
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --with test,type-check
+
+      - uses: tsuyoshicho/action-mypy@v4
+        with:
+          execute_command: poetry run mypy
+          fail_on_error: true
