@@ -3,6 +3,9 @@ name: Type Checking
 on:
   pull_request:
   push:
+    paths:
+      - "**.py"
+      - "!docs/conf.py"
 
 jobs:
   type-check:
