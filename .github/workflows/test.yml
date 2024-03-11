@@ -6,6 +6,10 @@ on:
     paths:
       - "**.py"
       - "!docs/conf.py"
+      - "poetry.lock"
+      - ".github/actions/setup/action.yml"
+      - ".github/actions/test/action.yml"
+      - ".github/workflows/test.yml"
 
 jobs:
   test:

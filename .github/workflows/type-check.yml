@@ -6,6 +6,9 @@ on:
     paths:
       - "**.py"
       - "!docs/conf.py"
+      - "poetry.lock"
+      - ".github/actions/setup/action.yml"
+      - ".github/workflows/type-check.yml"
 
 jobs:
   type-check:
