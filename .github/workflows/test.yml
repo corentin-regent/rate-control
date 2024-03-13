@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    name: Test (${{ matrix.python-version }})
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
@@ -39,11 +39,12 @@ jobs:
           runslow: ${{ matrix.python-version == '3.12' }}
 
   report:
-    name: Report on coverage
+    name: Report coverage
     needs: test
     runs-on: ubuntu-latest
     env:
-      from-fork: ${{ github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+      from_fork: ${{ github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
+      target_cov: 100
 
     steps:
       - name: Check out repository
@@ -68,15 +69,15 @@ jobs:
         run: poetry run coverage combine coverage-*/.coverage
 
       - name: Generate coverage report
-        if: ${{ env.from-fork != 'true' }}
+        if: ${{ env.from_fork != 'true' }}
         run: poetry run coverage xml -i
 
       - name: Fix coverage source
-        if: ${{ env.from-fork != 'true' }}
+        if: ${{ env.from_fork != 'true' }}
         run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
 
       - name: Report to SonarCloud
-        if: ${{ env.from-fork != 'true' }}
+        if: ${{ env.from_fork != 'true' }}
         uses: sonarsource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -85,4 +86,4 @@ jobs:
         run: >
           cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}');
           echo "Coverage: ${cov_percent}%";
-          [[ cov_percent -eq 100 ]] || exit 1
+          [[ cov_percent -ge target_cov ]] || exit 1
