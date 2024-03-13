@@ -79,3 +79,9 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Check code coverage
+        run: |
+          cov_percent=$(coverage report | awk '$1 == "TOTAL" {print $NF+0}')
+          echo 'Coverage: ${cov_percent}%'
+          [[ cov_percent -eq 100 ]] || exit 1
