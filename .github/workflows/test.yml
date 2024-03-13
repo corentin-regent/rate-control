@@ -37,10 +37,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
           runslow: ${{ matrix.python-version == '3.12' }}
 
-  sonar:
-    name: Upload to SonarCloud
+  report:
+    name: Report on coverage
     needs: test
     runs-on: ubuntu-latest
+    env:
+      from-fork: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
 
     steps:
       - name: Check out repository
@@ -65,13 +67,15 @@ jobs:
         run: poetry run coverage combine coverage-*/.coverage
 
       - name: Generate coverage report
+        if: ${{ !env.from-fork }}
         run: poetry run coverage xml -i
 
       - name: Fix coverage source
-        # see https://community.sonarsource.com/t/sonar-on-github-actions-with-python-coverage-source-issue/36057
+        if: ${{ !env.from-fork }}
         run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
 
-      - name: SonarCloud Scan
+      - name: Report to SonarCloud
+        if: ${{ !env.from-fork }}
         uses: sonarsource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
