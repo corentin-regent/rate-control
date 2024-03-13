@@ -1,5 +1,6 @@
 {
     "autoDocstring.docstringFormat": "google-notypes",
+    "esbonio.sphinx.confDir": "/docs",
     "python.analysis.diagnosticSeverityOverrides": {
         "reportImplicitOverride": "warning",
         "reportMissingTypeStubs": "none",
