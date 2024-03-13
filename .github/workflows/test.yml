@@ -82,6 +82,6 @@ jobs:
 
       - name: Check code coverage
         run: >
-          cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}');
-          echo 'Coverage: ${cov_percent}%';
+          cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}')
+          echo "Coverage: ${cov_percent}%"
           [[ cov_percent -eq 100 ]] || exit 1
