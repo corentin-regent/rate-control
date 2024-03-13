@@ -137,13 +137,13 @@ class Scheduler(RateController):
             await self._process_queues()
 
     async def _process_queues(self) -> None:
-        for queue in self._queues:
-            while queue:
-                request = queue.head()
-                if self.can_acquire(request.cost):
-                    await self._process_next_request(queue)
-                else:
-                    return
+        while True:
+            try:
+                queue = next(filter(lambda queue: self.can_acquire(queue.head().cost), filter(None, self._queues)))
+            except StopIteration:
+                break
+            else:
+                await self._process_next_request(queue)
 
     @contextmanager
     def _hold_request_processing(self) -> Iterator[None]:
