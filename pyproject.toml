@@ -91,7 +91,7 @@ branch = true
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-exclude_lines = [
+exclude_also = [
     "if TYPE_CHECKING:"
 ]
 
