@@ -6,6 +6,7 @@ on:
     paths:
       - "**.py"
       - "!docs/conf.py"
+      - "pyproject.toml"
       - "poetry.lock"
       - ".github/actions/setup/action.yml"
       - ".github/actions/test/action.yml"
