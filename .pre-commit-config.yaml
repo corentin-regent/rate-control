@@ -3,6 +3,4 @@ repos:
     rev: v0.2.2
     hooks:
       - id: ruff
-        alias: linter
       - id: ruff-format
-        alias: formatter
