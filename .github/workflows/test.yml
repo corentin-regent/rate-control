@@ -58,7 +58,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --only coverage
+        run: poetry install --no-interaction --no-root --with coverage
 
       - name: Download test artifacts
         uses: actions/download-artifact@v4
@@ -70,11 +70,9 @@ jobs:
 
       - name: Generate coverage report
         if: ${{ env.from_fork != 'true' }}
-        run: poetry run coverage xml -i
-
-      - name: Fix coverage source
-        if: ${{ env.from_fork != 'true' }}
-        run: sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
+        run: |
+          poetry run coverage xml -i
+          sed -i "s/home\/runner\/work\/rate-control\/rate-control/github\/workspace/g" coverage.xml
 
       - name: Report to SonarCloud
         if: ${{ env.from_fork != 'true' }}
@@ -83,7 +81,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Check code coverage
-        run: >
-          cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}');
-          echo "Coverage: ${cov_percent}%";
+        run: |
+          cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}')
+          echo "Coverage: ${cov_percent}%"
           [[ cov_percent -ge target_cov ]] || exit 1
