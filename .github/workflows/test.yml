@@ -8,6 +8,7 @@ on:
       - "!docs/conf.py"
       - "pyproject.toml"
       - "poetry.lock"
+      - "sonar-project.properties"
       - ".github/actions/setup/action.yml"
       - ".github/actions/test/action.yml"
       - ".github/workflows/test.yml"
