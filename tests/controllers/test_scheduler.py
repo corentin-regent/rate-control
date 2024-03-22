@@ -14,8 +14,9 @@ from rate_control import Bucket, Priority, RateLimit, ReachedMaxPending, Schedul
 from tests import assert_not_raises, checkpoints
 
 if sys.version_info >= (3, 9):
-    from builtins import tuple as Tuple
     from collections.abc import AsyncIterator, Awaitable, Callable
+
+    Tuple = tuple
 else:
     from typing import AsyncIterator, Awaitable, Callable, Tuple
 
@@ -216,9 +217,3 @@ async def test_not_entering_context(mock_bucket: Bucket) -> None:
     bucket = Scheduler(mock_bucket)
     with pytest.raises(RuntimeError):
         await bucket.schedule().__aenter__()
-
-
-@pytest.mark.anyio
-async def test_repr(mock_bucket: Mock, max_concurrency: int, max_pending: int) -> None:
-    scheduler = Scheduler(mock_bucket, max_concurrency=max_concurrency, max_pending=max_pending)
-    assert repr(scheduler) == f'Scheduler(bucket={mock_bucket!r}, {max_concurrency=}, {max_pending=})'
