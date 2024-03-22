@@ -7,7 +7,7 @@ Prerequisites
 Please follow `this guide <https://python-poetry.org/docs/>`_
 to install poetry if you don't have it already.
 
-All the commands that you may  use are grouped in the root Makefile.
+All the commands that you may use are grouped in the root Makefile.
 So please make sure that you have `Make <https://www.gnu.org/software/make/>`_
 in your environment, otherwise you can just copy the commands from the Makefile
 and paste them in your terminal.
@@ -67,3 +67,5 @@ All user-exposed classes, methods and functions you add must be documented, foll
 
 The documentation is built using `Sphinx <https://sphinx-doc.org>`_.
 You can generate it locally using ``make docs``.
+
+Also, do not forget to update the CHANGELOG and describe your changes!
