@@ -14,7 +14,9 @@ jobs:
   type-check:
     name: Type check
     runs-on: ubuntu-latest
-  
+    permissions:
+      pull-requests: write
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,3 +35,4 @@ jobs:
           execute_command: poetry run mypy
           fail_on_error: true
           github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
