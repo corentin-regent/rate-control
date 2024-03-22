@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Setup Poetry
+        uses: ./.github/actions/setup
+        with:
+          python-version: "3.12"
+
+      - name: Release
+        uses: corentin-regent/poetrel@v1
+        with:
+          changelog: README.rst
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          setup-poetry: false
+
+  post-release:
+    name: Post Release
+    runs-on: ubuntu-latest
+    needs: release
+
+    steps:
+      - name: Check out develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          token: ${{ secrets.PAT }}
+
+      - name: Synchronize develop branch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git merge origin/main
+          git push
