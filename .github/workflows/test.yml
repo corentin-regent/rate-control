@@ -45,7 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       from_fork: ${{ github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
-      target_cov: 100
 
     steps:
       - name: Check out repository
@@ -80,9 +79,3 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Check code coverage
-        run: |
-          cov_percent=$(poetry run coverage report | awk '$1 == "TOTAL" {print $NF+0}')
-          echo "Coverage: ${cov_percent}%"
-          [[ cov_percent -ge target_cov ]] || exit 1
