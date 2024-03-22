@@ -32,4 +32,4 @@ jobs:
         with:
           execute_command: poetry run mypy
           fail_on_error: true
-          github-token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.github_token }}
