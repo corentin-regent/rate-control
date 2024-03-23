@@ -26,6 +26,7 @@ jobs:
         with:
           changelog: README.rst
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          pypi-token: ${{ secrets.PYPI_TOKEN }}
           setup-poetry: false
 
   post-release:
