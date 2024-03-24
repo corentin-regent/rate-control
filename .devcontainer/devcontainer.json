@@ -28,6 +28,7 @@
           }
         ],
         "python.testing.pytestArgs": [
+            "-v",
             "--runslow",
             "tests/"
         ],
