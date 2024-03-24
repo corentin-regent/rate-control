@@ -2,7 +2,6 @@
 setup:
 	@poetry lock --no-update
 	@poetry install --with dev,docs
-	@poetry run pre-commit install
 
 .PHONY: lint
 lint:
