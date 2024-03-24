@@ -22,14 +22,9 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Install test dependencies
+    - name: Install dependencies
       shell: bash
-      run: poetry install --no-interaction --no-root --with test
-
-    - name: Install coverage dependencies
-      if: ${{ inputs.coverage == 'true' }}
-      shell: bash
-      run: poetry install --no-interaction --no-root --with coverage
+      run: poetry install --no-interaction --no-root --with dev
 
     - name: Run tests
       if: ${{ inputs.coverage == 'false' && inputs.runslow == 'false' }}
