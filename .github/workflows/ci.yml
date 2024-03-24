@@ -123,7 +123,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --with dev
+        run: poetry install --no-interaction --no-root --with dev,test
 
       - name: Run type checking
         uses: tsuyoshicho/action-mypy@v4
@@ -151,7 +151,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: poetry install --no-interaction --no-root --with dev
+        run: poetry install --no-interaction --no-root --with dev,test
 
       - name: Lint codebase
         run: poetry run ruff check
