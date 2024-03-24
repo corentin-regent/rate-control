@@ -49,7 +49,7 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 anyio = {version = "*", extras = ["trio"]}
-pre-commit = "^3"
+mypy = "^1.6"
 ruff = "^0.2"
 
 [tool.poetry.group.test]
@@ -58,21 +58,9 @@ optional = true
 [tool.poetry.group.test.dependencies]
 aiofastforward = "^0.0.26"
 anyio = {version = "*", extras = ["trio"]}
+coverage = {version = "^7", extras = ["toml"]}
 pytest = "^8"
 pytest-subtests = "^0.11"
-
-[tool.poetry.group.coverage]
-optional = true
-
-[tool.poetry.group.coverage.dependencies.coverage]
-version = "^7"
-extras = ["toml"]
-
-[tool.poetry.group.type-check]
-optional = true
-
-[tool.poetry.group.type-check.dependencies]
-mypy = "^1.6"
 
 [tool.poetry.group.docs]
 optional = true
