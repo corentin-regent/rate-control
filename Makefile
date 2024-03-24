@@ -1,6 +1,6 @@
 .PHONY: setup
 setup:
-	@poetry install --with dev,docs
+	@poetry install --with dev,test,docs
 
 .PHONY: lint
 lint:
