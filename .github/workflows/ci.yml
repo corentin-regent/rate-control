@@ -114,7 +114,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        ref: ${{ github.ref }}
+        with:
+          ref: ${{ github.ref }}
 
       - name: Setup
         uses: ./.github/actions/setup
