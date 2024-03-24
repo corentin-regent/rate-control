@@ -1,21 +1,31 @@
 Contributing
 ============
 
-Prerequisites
--------------
-
-Please follow `this guide <https://python-poetry.org/docs/>`_
-to install poetry if you don't have it already.
-
-All the commands that you may use are grouped in the root Makefile.
-So please make sure that you have `Make <https://www.gnu.org/software/make/>`_
-in your environment, otherwise you can just copy the commands from the Makefile
-and paste them in your terminal.
-
 Setting up
 ----------
 
-In order to install the project and required dependencies, you can run ``make install``.
+Using a Dev Container (recommended)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Open the project in the provided development container to get
+all tools and dependencies up and running automatically.
+
+If it is your first time using a dev container, you can follow
+`this guide <https://code.visualstudio.com/docs/devcontainers/containers#_installation>`_
+to set it up.
+
+Manual installation
+^^^^^^^^^^^^^^^^^^^
+
+Follow `this guide <https://python-poetry.org/docs/>`_
+to install poetry if you don't have it already.
+
+All the commands that you may use are grouped in the root Makefile.
+So make sure that you have `Make <https://www.gnu.org/software/make/>`_
+available in your environment, otherwise you can just copy the commands
+from the Makefile and paste them in your terminal.
+
+In order to install the project and required dependencies, you can run ``make setup``.
 
 Testing
 -------
@@ -32,8 +42,8 @@ Test coverage
 ^^^^^^^^^^^^^
 
 You can check your test coverage locally by using the
-`coverage <https://coverage.readthedocs.io/>`_ package
-through ``make coverage``.
+`coverage <https://coverage.readthedocs.io/>`_
+package through ``make coverage``.
 
 All the tests will be run, including the slow ones.
 

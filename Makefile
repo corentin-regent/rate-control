@@ -1,4 +1,4 @@
-.PHONY: install
+.PHONY: setup
 setup:
 	@poetry install --with dev,docs
 
