@@ -1,21 +1,45 @@
-name: Tests
+name: Continuous Integration
 
 on:
   pull_request:
   push:
     paths:
       - "**.py"
-      - "!docs/conf.py"
       - "pyproject.toml"
       - "poetry.lock"
       - "sonar-project.properties"
       - ".github/actions/setup/action.yml"
       - ".github/actions/test/action.yml"
-      - ".github/workflows/test.yml"
+      - ".github/workflows/ci.yml"
 
 jobs:
+  deps-check:
+    name: Dependency check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          python-version: "3.12"
+
+      - name: Refresh lock file
+        run: poetry lock --no-update
+
+      - name: Commit lock file
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '[skip actions] Refresh lock file'
+          file_pattern: poetry.lock
+
   test:
     name: Test (Python ${{ matrix.python-version }})
+    needs: deps-check
     runs-on: ubuntu-latest
     timeout-minutes: 5
     strategy:
@@ -79,3 +103,60 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  type-check:
+    name: Type check
+    needs: deps-check
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: Run type checking
+        uses: tsuyoshicho/action-mypy@v4
+        with:
+          execute_command: poetry run mypy
+          fail_on_error: true
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+
+  lint-format:
+    name: Lint & Format
+    needs: deps-check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --with dev
+
+      - name: Lint codebase
+        run: poetry run ruff check
+
+      - name: Format codebase
+        run: poetry run ruff format
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '[skip actions] Lint & Format codebase'
