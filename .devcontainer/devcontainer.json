@@ -1,0 +1,39 @@
+{
+  "name": "corentin-regent/rate-control",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "postCreateCommand": "make setup",
+  "features": {
+    "ghcr.io/devcontainers-contrib/features/poetry:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff",
+        "github.vscode-github-actions",
+        "ms-python.mypy-type-checker",
+        "ms-python.python",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+        "trond-snekvik.simple-rst"
+      ],
+      "settings": {
+        "autoDocstring.docstringFormat": "google-notypes",
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "python.analysis.packageIndexDepths": [
+          {
+            "name": "anyio",
+            "depth": 2
+          }
+        ],
+        "python.testing.pytestArgs": [
+            "--runslow",
+            "tests/"
+        ],
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false
+      }
+    }
+  }
+}
