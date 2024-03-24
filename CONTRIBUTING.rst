@@ -15,8 +15,7 @@ and paste them in your terminal.
 Setting up
 ----------
 
-In order to install the project, required dependencies, and to configure
-`pre-commit <https://pre-commit.com/>`_ hooks, you can run ``make install``.
+In order to install the project and required dependencies, you can run ``make install``.
 
 Testing
 -------
