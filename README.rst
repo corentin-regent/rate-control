@@ -4,8 +4,8 @@ Rate Control
 
 *Versatile rate controlling in Python*
 
-:CI/CD: |tests| |type-checking|
-:Package: |python-version| |package-version| |docs| |license|
+:CI/CD: |release| |ci| |docs|
+:Package: |python-version| |package-version| |license|
 :Quality: |coverage| |quality-gate| |maintainability| |reliability|
 :Meta: |type-check| |code-style|
 
@@ -36,13 +36,17 @@ Contributions are very welcome. Please read `CONTRIBUTING </CONTRIBUTING.rst>`_ 
 
 .. CI/CD:
 
-.. |tests| image:: https://github.com/corentin-regent/rate-control/actions/workflows/test.yml/badge.svg
-  :alt: Tests
-  :target: https://github.com/corentin-regent/rate-control/actions/workflows/test.yml
+.. |release| image:: https://github.com/corentin-regent/rate-control/actions/workflows/release.yml/badge.svg
+  :alt: Release
+  :target: https://github.com/corentin-regent/rate-control/actions/workflows/release.yml
 
-.. |type-checking| image:: https://github.com/corentin-regent/rate-control/actions/workflows/type-check.yml/badge.svg
-  :alt: Type Checking
-  :target: https://github.com/corentin-regent/rate-control/actions/workflows/type-check.yml
+.. |ci| image:: https://github.com/corentin-regent/rate-control/actions/workflows/ci.yml/badge.svg
+  :alt: Continuous Integration
+  :target: https://github.com/corentin-regent/rate-control/actions/workflows/ci.yml
+
+.. |docs| image:: https://readthedocs.org/projects/rate-control/badge/?version=latest
+  :alt: Documentation Status
+  :target: https://rate-control.readthedocs.io/
 
 .. Package:
 
@@ -52,10 +56,6 @@ Contributions are very welcome. Please read `CONTRIBUTING </CONTRIBUTING.rst>`_ 
 .. |package-version| image:: https://img.shields.io/pypi/v/rate-control?logo=python
   :alt: Package Version
   :target: https://pypi.org/project/rate-control/
-
-.. |docs| image:: https://readthedocs.org/projects/rate-control/badge/?version=latest
-    :alt: Documentation Status
-    :target: https://rate-control.readthedocs.io/en/latest/
 
 .. |license| image:: https://img.shields.io/pypi/l/rate-control?logo=unlicense
   :alt: MIT License
