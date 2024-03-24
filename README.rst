@@ -4,10 +4,12 @@ Rate Control
 
 *Versatile rate controlling in Python*
 
-:CI/CD: |release| |ci| |docs|
-:Package: |python-version| |package-version| |license|
-:Quality: |coverage| |quality-gate| |maintainability| |reliability|
-:Meta: |type-check| |code-style|
+======= =========================================================
+CI/CD   |release| |ci| |docs|
+Package |python-version| |package-version| |license|
+Quality |coverage| |quality-gate| |maintainability| |reliability|
+Meta    |type-check| |code-style|
+======= =========================================================
 
 Documentation
 =============
