@@ -10,7 +10,6 @@
       "extensions": [
         "charliermarsh.ruff",
         "github.vscode-github-actions",
-        "ms-python.mypy-type-checker",
         "ms-python.python",
         "njpwerner.autodocstring",
         "redhat.vscode-yaml",
