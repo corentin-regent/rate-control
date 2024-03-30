@@ -24,7 +24,7 @@ jobs:
       - name: Release
         uses: corentin-regent/poetrel@v1
         with:
-          changelog: README.rst
+          changelog: CHANGELOG.rst
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pypi-token: ${{ secrets.PYPI_TOKEN }}
           setup-poetry: false
