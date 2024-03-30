@@ -4,7 +4,7 @@ __all__ = [
 
 import sys
 
-from rate_control.buckets._base import BaseWindowedTokenBucket
+from rate_control.buckets._base import BaseWindowedTokenBucket, CapacityUpdatingBucket
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -12,7 +12,7 @@ else:
     from typing_extensions import override
 
 
-class SlidingWindowLog(BaseWindowedTokenBucket):
+class SlidingWindowLog(BaseWindowedTokenBucket, CapacityUpdatingBucket):
     """Bucket whose refill strategy follows the sliding window log algorithm.
 
     Every consumed tokens get replenished after ``duration`` seconds.

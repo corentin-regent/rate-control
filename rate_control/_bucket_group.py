@@ -71,7 +71,7 @@ class BucketGroup(Bucket):
 
     @override
     async def wait_for_refill(self) -> None:
-        """Wait until any of the underlying bucket refills."""
+        """Wait until any of the underlying buckets refills."""
         with suppress(WouldBlock):
             while True:
                 refilled_bucket = self._recv_stream.receive_nowait()

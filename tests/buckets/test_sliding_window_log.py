@@ -151,6 +151,40 @@ async def test_wait_for_refill(
     assert refilled == 2
 
 
+@pytest.mark.anyio
+async def test_update_capacity(
+    bucket: SlidingWindowLog,
+    capacity: float,
+    duration: float,
+    any_token: float,
+    fast_forward: FastForward,
+) -> None:
+    lower_capacity = capacity / 2
+    assert bucket.can_acquire(capacity)
+    bucket.acquire(capacity)
+
+    bucket.update_capacity(lower_capacity)
+    assert not bucket.can_acquire(any_token)
+    await fast_forward(duration)
+    assert bucket.can_acquire(lower_capacity)
+    assert not bucket.can_acquire(capacity)
+
+    bucket.update_capacity(capacity)
+    assert bucket.can_acquire(capacity)
+
+
+@pytest.mark.anyio
+async def test_update_capacity_validation(
+    bucket: SlidingWindowLog, some_negative_value: float, some_valid_capacity: float
+) -> None:
+    with pytest.raises(ValueError):
+        bucket.update_capacity(0)
+    with pytest.raises(ValueError):
+        bucket.update_capacity(some_negative_value)
+    with assert_not_raises():
+        bucket.update_capacity(some_valid_capacity)
+
+
 def test_not_entering_context(capacity: float, duration: float, any_token: float) -> None:
     bucket = SlidingWindowLog(capacity, duration)
     with pytest.raises(RuntimeError):

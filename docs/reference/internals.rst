@@ -23,6 +23,9 @@ Buckets
 
 .. autoclass:: rate_control.buckets._base.BaseWindowedTokenBucket
 
+.. autoclass:: rate_control.buckets._base.CapacityUpdatingBucket
+    :no-inherited-members:
+
 Miscellaneous
 -------------
 

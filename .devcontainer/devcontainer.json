@@ -10,7 +10,6 @@
       "extensions": [
         "charliermarsh.ruff",
         "github.vscode-github-actions",
-        "ms-python.mypy-type-checker",
         "ms-python.python",
         "njpwerner.autodocstring",
         "redhat.vscode-yaml",
@@ -19,6 +18,10 @@
       ],
       "settings": {
         "autoDocstring.docstringFormat": "google-notypes",
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "always",
+          "source.organizeImports": "always"
+        },
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
         "python.analysis.packageIndexDepths": [
