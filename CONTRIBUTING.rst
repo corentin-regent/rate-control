@@ -17,7 +17,7 @@ to set it up.
 Manual installation
 ^^^^^^^^^^^^^^^^^^^
 
-Follow `this guide <https://python-poetry.org/docs/>`_
+See `this page <https://python-poetry.org/docs/>`_
 to install poetry if you don't have it already.
 
 All the commands that you may use are grouped in the root Makefile.
