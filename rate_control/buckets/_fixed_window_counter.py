@@ -5,7 +5,7 @@ __all__ = [
 import sys
 from typing import Any
 
-from rate_control.buckets._base import BaseWindowedTokenBucket
+from rate_control.buckets._base import BaseWindowedTokenBucket, CapacityUpdatingBucket
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -13,7 +13,7 @@ else:
     from typing_extensions import override
 
 
-class FixedWindowCounter(BaseWindowedTokenBucket):
+class FixedWindowCounter(BaseWindowedTokenBucket, CapacityUpdatingBucket):
     """Bucket whose refill strategy follows the fixed window counter algorithm.
 
     The bucket refills once every ``duration`` seconds, to cap its tokens back to ``capacity``.
