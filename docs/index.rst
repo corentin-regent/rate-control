@@ -18,10 +18,12 @@ Key Features
 .. _asyncio: https://docs.python.org/3/library/asyncio.html
 .. _Trio: https://github.com/python-trio/trio
 
+Documentation index
+-------------------
 
 .. toctree::
    :caption: Documentation
-   :hidden:
+   :maxdepth: 2
 
    quickstart
    weighting
