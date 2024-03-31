@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rate-control"
-version = "1.0.0"
+version = "1.1.0"
 description = "Versatile rate controlling in Python"
 authors = ["Corentin Régent <corentin.regent.pro@gmail.com>"]
 license = "MIT"
