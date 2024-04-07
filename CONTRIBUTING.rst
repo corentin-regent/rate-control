@@ -76,5 +76,3 @@ All user-exposed classes, methods and functions you add must be documented, foll
 
 The documentation is built using `Sphinx <https://sphinx-doc.org>`_.
 You can generate it locally using ``make docs``.
-
-Also, do not forget to update the CHANGELOG and describe your changes!
