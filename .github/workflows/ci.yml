@@ -36,7 +36,7 @@ jobs:
       - name: Commit lock file
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: '[skip actions] Refresh lock file'
+          commit_message: '[skip ci] Refresh lock file'
           file_pattern: poetry.lock
 
   test:
@@ -164,4 +164,4 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: '[skip actions] Lint & Format codebase'
+          commit_message: '[skip ci] Lint & Format codebase'
