@@ -1,6 +1,6 @@
 from anyio import run, sleep
 from anyio.lowlevel import checkpoint
-from rate_control import BucketGroup, Duration, RateLimit, RateLimiter, FixedWindowCounter
+from rate_control import BucketGroup, Duration, FixedWindowCounter, RateLimit, RateLimiter
 
 async def main() -> None:
     first_bucket = FixedWindowCounter(2, Duration.SECOND)
@@ -8,23 +8,23 @@ async def main() -> None:
     async with BucketGroup(first_bucket, second_bucket) as bucket_group:
         rate_limiter = RateLimiter(bucket_group)
 
-        with rate_limiter.hold():
+        async with rate_limiter.request():
             print('First request passes')
-        with rate_limiter.hold():
+        async with rate_limiter.request():
             print('Second request passes')
 
         try:
-            rate_limiter.hold().__enter__()
+            async with rate_limiter.request(): ...
         except RateLimit:
             print('First bucket is empty')
 
         await sleep(Duration.SECOND)
         await checkpoint()  # yield control to the buckets
-        with rate_limiter.hold():
+        async with rate_limiter.request():
             print('New request passes after replenishment')
 
         try:
-            rate_limiter.hold().__enter__()
+            async with rate_limiter.request(): ...
         except RateLimit:
             print('Now second bucket is empty')
 

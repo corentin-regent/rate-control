@@ -35,8 +35,8 @@ Below is a simple example of how you could use a rate limiter,
 to ensure that no more than two requests are handled each minute.
 
 .. note::
-    All available bucket algorithms are explained
-    on the :doc:`dedicated page </buckets>`.
+    All available bucket algorithms are detailed
+    in the :doc:`dedicated page </buckets>`.
 
 .. tabs::
     .. group-tab:: Asyncio

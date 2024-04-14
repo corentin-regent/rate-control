@@ -1,5 +1,5 @@
 from trio import run
-from rate_control import Duration, RateLimit, RateLimiter, FixedWindowCounter
+from rate_control import Duration, FixedWindowCounter, RateLimit, RateLimiter
 
 async def main() -> None:
     async with FixedWindowCounter(capacity=2, duration=Duration.MINUTE) as bucket:
@@ -7,7 +7,7 @@ async def main() -> None:
 
         for _ in range(3):
             try:
-                with rate_limiter.hold():
+                async with rate_limiter.request():
                     print('Request executed')
             except RateLimit:
                 print('Request rejected')

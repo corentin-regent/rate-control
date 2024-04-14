@@ -1,4 +1,4 @@
-from contextlib import ExitStack
+from contextlib import AsyncExitStack
 from functools import partial
 from unittest.mock import Mock
 
@@ -41,29 +41,32 @@ async def test_simple_rate_limiting(
     assert rate_limiter.can_acquire(some_tokens)
     assert not rate_limiter.can_acquire(some_tokens + any_token)
     with pytest.raises(RateLimit):
-        rate_limiter.hold(some_tokens + any_token).__enter__()
+        async with rate_limiter.request(some_tokens + any_token):
+            ...
     mock_bucket.acquire.assert_not_called()
 
-    with rate_limiter.hold(some_tokens):
+    async with rate_limiter.request(some_tokens):
         mock_bucket.acquire.assert_called_once_with(some_tokens)
 
 
 @pytest.mark.anyio
 async def test_max_concurrency(rate_limiter: RateLimiter, mock_bucket: Mock, max_concurrency: int) -> None:
     mock_bucket.can_acquire = Mock(return_value=True)
-    with ExitStack() as stack:
+    async with AsyncExitStack() as stack:
         for _ in range(max_concurrency - 1):
             assert rate_limiter.can_acquire()
-            stack.enter_context(rate_limiter.hold())
+            await stack.enter_async_context(rate_limiter.request())
 
-        with rate_limiter.hold():
+        async with rate_limiter.request():
             assert not rate_limiter.can_acquire()
             with pytest.raises(RateLimit):
-                rate_limiter.hold().__enter__()
+                async with rate_limiter.request():
+                    ...
 
         assert rate_limiter.can_acquire()
         with assert_not_raises():
-            rate_limiter.hold().__enter__()
+            async with rate_limiter.request():
+                ...
 
 
 @pytest.mark.anyio

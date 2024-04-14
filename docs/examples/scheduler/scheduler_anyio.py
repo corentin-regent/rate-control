@@ -1,8 +1,8 @@
 from anyio import create_task_group, current_time, run
-from rate_control import Duration, Scheduler, FixedWindowCounter
+from rate_control import Duration, FixedWindowCounter, RateController, Scheduler
 
-async def schedule_print(scheduler: Scheduler, start_time: float) -> None:
-    async with scheduler.schedule():
+async def request_print(controller: RateController, start_time: float) -> None:
+    async with controller.request():
         print(f'Elapsed: {current_time() - start_time :.1f} seconds')
 
 async def main() -> None:
@@ -10,6 +10,6 @@ async def main() -> None:
             Scheduler(bucket) as scheduler, \
             create_task_group() as task_group:
         for _ in range(3):
-            task_group.start_soon(schedule_print, scheduler, current_time())
+            task_group.start_soon(request_print, scheduler, current_time())
 
 run(main)

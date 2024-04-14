@@ -34,14 +34,14 @@ Here is how the :class:`.Scheduler` can be used:
 Similarly, the :class:`.Scheduler` can postpone jobs
 if the specified ``max_concurrency`` was reached,
 to be processed when another request exits the
-:meth:`~rate_control.Scheduler.schedule` context.
+:meth:`~rate_control.Scheduler.request` context.
 
 Fill or kill
 ^^^^^^^^^^^^
 
 You can choose to fall back to the simple rate limiting behavior
 for a given request, by providing a ``fill_or_kill=True`` argument
-to :meth:`~rate_control.Scheduler.schedule`.
+to :meth:`~rate_control.Scheduler.request`.
 
 The :exc:`.RateLimit` exception will be raised if the request
 cannot be processed instantly.
@@ -67,7 +67,7 @@ Specifying a :enum:`.Priority`
 Sometimes, some functionalities of your application may be more critical than others.
 
 In order to schedule the execution of important requests before the others,
-:meth:`~rate_control.Scheduler.schedule` can take a ``priority`` argument.
+:meth:`~rate_control.Scheduler.request` can take a ``priority`` argument.
 
 Under the hood, there is one request queue for each available priority level.
 Therefore, requests with higher priority will bypass the queue

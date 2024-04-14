@@ -3,8 +3,8 @@ __all__ = [
 ]
 
 import sys
-from abc import ABC
-from contextlib import contextmanager
+from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager, contextmanager
 from typing import Any, Optional
 
 from rate_control._errors import RateLimit
@@ -13,9 +13,14 @@ from rate_control._helpers._validation import validate_max_concurrency
 from rate_control.buckets import Bucket
 
 if sys.version_info >= (3, 9):
-    from collections.abc import Iterator
+    from collections.abc import AsyncIterator, Iterator
 else:
-    from typing import Iterator
+    from typing import AsyncIterator, Iterator
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -39,6 +44,13 @@ class RateController(ABC):
         self._max_concurrency = max_concurrency
         self._concurrent_requests = 0
 
+    async def __aenter__(self) -> Self:
+        """Enter the controller's context."""
+        return self
+
+    async def __aexit__(self, *_: Any) -> Optional[bool]:
+        """Exit the scheduler's context."""
+
     @override
     def __repr__(self) -> str:
         return mk_repr(self, bucket=self._bucket, max_concurrency=self._max_concurrency)
@@ -53,6 +65,17 @@ class RateController(ABC):
             Whether a request for the given amount of tokens can be processed instantly.
         """
         return not self._is_concurrency_limited and self._bucket.can_acquire(tokens)
+
+    @asynccontextmanager
+    @abstractmethod
+    async def request(self, tokens: float = 1) -> AsyncIterator[None]:
+        """Asynchronous context manager that requests the given amount of tokens before the execution.
+
+        Args:
+            tokens: The number of tokens required for the request.
+                Defaults to `1`.
+        """
+        yield  # pragma: no cover
 
     @property
     def _is_concurrency_limited(self) -> bool:

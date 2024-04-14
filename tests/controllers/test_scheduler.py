@@ -51,7 +51,7 @@ def _prepare_request(scheduler: Scheduler) -> Tuple[Callable[..., Awaitable[None
     called = _Called()
 
     async def schedule(*args: Any) -> None:
-        async with scheduler.schedule(*args):
+        async with scheduler.request(*args):
             called.value = True
 
     return schedule, called
@@ -150,11 +150,11 @@ async def test_max_concurrency(
     async with AsyncExitStack() as stack:
         for _ in range(max_concurrency - 1):
             assert mocked_scheduler.can_acquire()
-            await stack.enter_async_context(mocked_scheduler.schedule())
+            await stack.enter_async_context(mocked_scheduler.request())
 
         schedule_additional, additional_called = _prepare_request(mocked_scheduler)
         assert mocked_scheduler.can_acquire()
-        async with mocked_scheduler.schedule():
+        async with mocked_scheduler.request():
             assert not mocked_scheduler.can_acquire()
             task_group.start_soon(schedule_additional)
             await checkpoints(2)
@@ -177,14 +177,16 @@ async def test_max_pending(
     await checkpoint()
 
     with pytest.raises(ReachedMaxPending):
-        await mocked_scheduler.schedule().__aenter__()
+        async with mocked_scheduler.request():
+            ...
 
 
 @pytest.mark.anyio
 async def test_fill_or_kill(mocked_scheduler: Scheduler, mock_bucket: Mock) -> None:
     mock_bucket.can_acquire = Mock(return_value=False)
     with pytest.raises(RateLimit):
-        await mocked_scheduler.schedule(fill_or_kill=True).__aenter__()
+        async with mocked_scheduler.request(fill_or_kill=True):
+            ...
 
 
 @pytest.mark.anyio
@@ -195,7 +197,7 @@ async def test_cancel_pending_task(
     task_group: TaskGroup,
     fast_forward: FastForward,
 ) -> None:
-    await scheduler.schedule(cost=capacity).__aenter__()
+    await scheduler.request(capacity).__aenter__()
     schedule_to_cancel, to_cancel_called = _prepare_request(scheduler)
     schedule_other, other_called = _prepare_request(scheduler)
 
@@ -213,9 +215,10 @@ async def test_cancel_pending_task(
 
 @pytest.mark.anyio
 async def test_not_entering_context(mock_bucket: Bucket) -> None:
-    bucket = Scheduler(mock_bucket)
+    scheduler = Scheduler(mock_bucket)
     with pytest.raises(RuntimeError):
-        await bucket.schedule().__aenter__()
+        async with scheduler.request():
+            ...
 
 
 @pytest.mark.anyio
