@@ -6,6 +6,9 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
+* Now the ``RateController`` base class, and all buckets,
+  are exported in the main ``rate_control`` module.
+
 1.1.0
 -----
 
