@@ -1,6 +1,5 @@
 from anyio import create_task_group, current_time, run
-from rate_control import Duration, Scheduler
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, Scheduler, FixedWindowCounter
 
 async def schedule_print(scheduler: Scheduler, start_time: float) -> None:
     async with scheduler.schedule():

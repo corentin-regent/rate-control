@@ -1,6 +1,5 @@
 from trio import run
-from rate_control import RateLimit, RateLimiter
-from rate_control.buckets import UnlimitedBucket
+from rate_control import RateLimit, RateLimiter, UnlimitedBucket
 
 async def main() -> None:
     async with UnlimitedBucket() as bucket:

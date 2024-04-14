@@ -1,6 +1,5 @@
 from asyncio import gather, get_running_loop, run
-from rate_control import Duration, Scheduler
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, Scheduler, FixedWindowCounter
 
 def current_time() -> float:
     loop = get_running_loop()

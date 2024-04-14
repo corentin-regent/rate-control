@@ -24,7 +24,7 @@ else:
 
 
 class RateController(ABC):
-    """Base class for rate controllers."""
+    """Abstract base class for rate controllers."""
 
     def __init__(self, bucket: Bucket, max_concurrency: Optional[int] = None, **kwargs: Any) -> None:
         """

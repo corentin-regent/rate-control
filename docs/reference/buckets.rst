@@ -1,14 +1,13 @@
 Buckets
 =======
 
-.. autoclass:: rate_control.buckets.Bucket
+.. autoclass:: rate_control.Bucket
 
+.. autoclass:: rate_control.FixedWindowCounter
+.. autoclass:: rate_control.LeakyBucket
+.. autoclass:: rate_control.SlidingWindowLog
 
-.. autoclass:: rate_control.buckets.FixedWindowCounter
-.. autoclass:: rate_control.buckets.LeakyBucket
-.. autoclass:: rate_control.buckets.SlidingWindowLog
-
-.. autoclass:: rate_control.buckets.UnlimitedBucket
+.. autoclass:: rate_control.UnlimitedBucket
     :no-inherited-members:
 
 .. autoclass:: rate_control.BucketGroup

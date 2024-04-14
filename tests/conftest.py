@@ -9,8 +9,7 @@ from anyio import create_task_group
 from anyio.abc import TaskGroup
 from pytest import Function, Parser
 
-from rate_control import Bucket
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Bucket, FixedWindowCounter
 
 if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator, Sequence

@@ -5,7 +5,6 @@ __all__ = [
     'CapacityUpdatingBucket',
     'TokenBasedBucket',
 ]
-
 from ._abc import Bucket
 from ._base_rate import BaseRateBucket
 from ._capacity_updating import CapacityUpdatingBucket

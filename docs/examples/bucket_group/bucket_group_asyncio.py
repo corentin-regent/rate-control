@@ -1,6 +1,5 @@
 from asyncio import run, sleep
-from rate_control import BucketGroup, Duration, RateLimit, RateLimiter
-from rate_control.buckets import FixedWindowCounter
+from rate_control import BucketGroup, Duration, RateLimit, RateLimiter, FixedWindowCounter
 
 async def main() -> None:
     first_bucket = FixedWindowCounter(2, Duration.SECOND)

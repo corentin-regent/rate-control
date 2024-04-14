@@ -18,7 +18,7 @@ else:
     from typing import Collection
 
 if TYPE_CHECKING:
-    from rate_control.buckets._base import Bucket
+    from rate_control.buckets import Bucket
 
 
 def validate_buckets(buckets: Collection[Bucket]) -> None:

@@ -1,7 +1,6 @@
 from trio import run, sleep
 from trio.lowlevel import checkpoint
-from rate_control import BucketGroup, Duration, RateLimit, RateLimiter
-from rate_control.buckets import FixedWindowCounter
+from rate_control import BucketGroup, Duration, RateLimit, RateLimiter, FixedWindowCounter
 
 async def main() -> None:
     first_bucket = FixedWindowCounter(2, Duration.SECOND)

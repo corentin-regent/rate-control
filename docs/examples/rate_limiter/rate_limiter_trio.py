@@ -1,6 +1,5 @@
 from trio import run
-from rate_control import Duration, RateLimit, RateLimiter
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, RateLimit, RateLimiter, FixedWindowCounter
 
 async def main() -> None:
     async with FixedWindowCounter(capacity=2, duration=Duration.MINUTE) as bucket:

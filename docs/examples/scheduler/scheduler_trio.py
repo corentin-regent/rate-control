@@ -1,6 +1,5 @@
 from trio import current_time, open_nursery, run
-from rate_control import Duration, Scheduler
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, Scheduler, FixedWindowCounter
 
 async def schedule_print(scheduler: Scheduler, start_time: float) -> None:
     async with scheduler.schedule():

@@ -5,16 +5,8 @@ This section documents private internal objects *for reference*.
 You will not need to manipulate them directly unless
 you are seeking to contribute to the library.
 
-Base classes
-------------
-
-Controllers
-^^^^^^^^^^^
-
-.. autoclass:: rate_control._controllers._base.RateController
-
-Buckets
-^^^^^^^
+Bucket mixins
+-------------
 
 .. autoclass:: rate_control.buckets._base.TokenBasedBucket
    :no-inherited-members:

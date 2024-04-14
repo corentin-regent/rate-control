@@ -1,6 +1,5 @@
 from trio import run
-from rate_control import Duration, RateLimit, RateLimiter
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, RateLimit, RateLimiter, FixedWindowCounter
 
 def normal_request(rate_limiter: RateLimiter) -> None:
     with rate_limiter.hold():  # weight defaults to 1
