@@ -1,0 +1,26 @@
+name: Synchronize Poetrel labels
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # once a day
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          python-version: '3.12'
+
+      - name: Sync labels with GitHub
+        uses: corentin-regent/poetrel/sync-labels@v1
+        with:
+          setup-python: false
