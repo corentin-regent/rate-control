@@ -47,6 +47,7 @@ async def task_group() -> AsyncIterator[TaskGroup]:
 
 def _mk_mock_bucket() -> Mock:
     mock = Mock(Bucket)
+    mock.acquire = Mock()
     mock.__aenter__ = AsyncMock()
     mock.__aexit__ = AsyncMock()
     return mock

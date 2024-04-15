@@ -1,3 +1,4 @@
+import sys
 from contextlib import AsyncExitStack
 from functools import partial
 from unittest.mock import Mock
@@ -7,10 +8,16 @@ import pytest
 from rate_control import Bucket, RateLimit, RateLimiter
 from tests import assert_not_raises
 
+if sys.version_info >= (3, 9):
+    from collections.abc import AsyncIterator, Collection
+else:
+    from typing import AsyncIterator, Collection
+
 
 @pytest.fixture
-def rate_limiter(mock_bucket: Mock, max_concurrency: int) -> RateLimiter:
-    return RateLimiter(mock_bucket, max_concurrency=max_concurrency)
+async def rate_limiter(mock_bucket: Mock, max_concurrency: int) -> AsyncIterator[RateLimiter]:
+    async with RateLimiter(mock_bucket, max_concurrency=max_concurrency) as rate_limiter:
+        yield rate_limiter
 
 
 @pytest.mark.anyio
@@ -70,6 +77,31 @@ async def test_max_concurrency(rate_limiter: RateLimiter, mock_bucket: Mock, max
 
 
 @pytest.mark.anyio
+async def test_multiple_buckets(mock_buckets: Collection[Mock], any_token: float) -> None:
+    async with RateLimiter(*mock_buckets, should_enter_context=False) as rate_limiter, rate_limiter.request(any_token):
+        for bucket in mock_buckets:
+            bucket.acquire.assert_called_once_with(any_token)
+
+
+@pytest.mark.anyio
+async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
+    async with RateLimiter(*mock_buckets, should_enter_context=True):
+        for bucket in mock_buckets:
+            bucket.__aenter__.assert_awaited_once()
+    for bucket in mock_buckets:
+        bucket.__aexit__.assert_awaited_once()
+
+
+@pytest.mark.anyio
+async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
+    async with RateLimiter(*mock_buckets, should_enter_context=False):
+        for bucket in mock_buckets:
+            bucket.__aenter__.assert_not_called()
+    for bucket in mock_buckets:
+        bucket.__aexit__.assert_not_called()
+
+
+@pytest.mark.anyio
 async def test_repr(mock_bucket: Bucket, max_concurrency: int) -> None:
-    scheduler = RateLimiter(mock_bucket, max_concurrency=max_concurrency)
-    assert repr(scheduler) == f'RateLimiter(bucket={mock_bucket!r}, {max_concurrency=})'
+    scheduler = RateLimiter(mock_bucket, should_enter_context=False, max_concurrency=max_concurrency)
+    assert repr(scheduler) == f'RateLimiter({mock_bucket!r}, should_enter_context=False, {max_concurrency=})'

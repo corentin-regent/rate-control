@@ -2,9 +2,8 @@ from anyio import run
 from rate_control import Duration, FixedWindowCounter, RateLimit, RateLimiter
 
 async def main() -> None:
-    async with FixedWindowCounter(capacity=2, duration=Duration.MINUTE) as bucket:
-        rate_limiter = RateLimiter(bucket)
-
+    bucket = FixedWindowCounter(capacity=2, duration=Duration.MINUTE)
+    async with RateLimiter(bucket) as rate_limiter:
         for _ in range(3):
             try:
                 async with rate_limiter.request():

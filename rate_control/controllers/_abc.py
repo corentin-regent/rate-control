@@ -7,9 +7,10 @@ from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager, contextmanager
 from typing import Any, Optional
 
+from rate_control._bucket_group import BucketGroup
 from rate_control._errors import RateLimit
 from rate_control._helpers import mk_repr
-from rate_control._helpers._validation import validate_max_concurrency
+from rate_control._helpers._validation import validate_buckets, validate_max_concurrency
 from rate_control.buckets import Bucket
 
 if sys.version_info >= (3, 9):
@@ -31,29 +32,57 @@ else:
 class RateController(ABC):
     """Abstract base class for rate controllers."""
 
-    def __init__(self, bucket: Bucket, max_concurrency: Optional[int] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *buckets: Bucket,
+        should_enter_context: bool = True,
+        max_concurrency: Optional[int] = None,
+        **kwargs: Any,
+    ) -> None:
         """
         Args:
-            bucket: The bucket that will be managed by the rate controller.
+            bucket: The buckets that will be managed by the rate controller.
+            should_enter_context: Whether entering the context of the rate controller
+                should also enter the context of the underlying buckets.
+                Defaults to True.
             max_concurrency: The maximum amount of concurrent requests allowed.
                 Defaults to `None` (no limit).
         """
         super().__init__(**kwargs)
+        validate_buckets(buckets)
         validate_max_concurrency(max_concurrency)
-        self._bucket = bucket
+        self._bucket = (
+            buckets[0] if len(buckets) == 1 else BucketGroup(*buckets, should_enter_context=should_enter_context)
+        )
+        self._should_enter_context = should_enter_context
         self._max_concurrency = max_concurrency
         self._concurrent_requests = 0
 
     async def __aenter__(self) -> Self:
-        """Enter the controller's context."""
+        """Enter the controller's context.
+
+        Also enters the context of the underlying buckets,
+        if the `should_enter_context` flag was set to `True`.
+        """
+        if self._should_enter_context:
+            await self._bucket.__aenter__()
         return self
 
-    async def __aexit__(self, *_: Any) -> Optional[bool]:
-        """Exit the scheduler's context."""
+    async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
+        """Exit the controller's context.
+
+        Also exits the context of the underlying buckets,
+        if the `should_enter_context` flag was set to `True`.
+        """
+        if self._should_enter_context:
+            await self._bucket.__aexit__(*exc_info)
+        return False
 
     @override
     def __repr__(self) -> str:
-        return mk_repr(self, bucket=self._bucket, max_concurrency=self._max_concurrency)
+        return mk_repr(
+            self, self._bucket, should_enter_context=self._should_enter_context, max_concurrency=self._max_concurrency
+        )
 
     def can_acquire(self, tokens: float = 1) -> bool:
         """

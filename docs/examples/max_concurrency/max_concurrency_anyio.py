@@ -2,9 +2,7 @@ from anyio import run
 from rate_control import RateLimit, RateLimiter, UnlimitedBucket
 
 async def main() -> None:
-    async with UnlimitedBucket() as bucket:
-        rate_limiter = RateLimiter(bucket, max_concurrency=1)
-
+    async with RateLimiter(UnlimitedBucket(), max_concurrency=1) as rate_limiter:
         async with rate_limiter.request():
             print('First request passes')
             try:

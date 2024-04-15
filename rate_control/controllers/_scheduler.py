@@ -34,11 +34,12 @@ else:
 
 
 class Scheduler(RateController):
-    """Rate controller that schedule requests for later processing."""
+    """Rate controller that schedules requests for later processing."""
 
     def __init__(
         self,
-        bucket: Bucket,
+        *buckets: Bucket,
+        should_enter_context: bool = True,
         max_concurrency: Optional[int] = None,
         max_pending: Optional[int] = None,
         queue_factory: Callable[[], Queue[Request]] = PriorityQueue,
@@ -46,7 +47,10 @@ class Scheduler(RateController):
     ) -> None:
         """
         Args:
-            bucket: The bucket that will be managed by the rate controller.
+            buckets: The buckets that will be managed by the rate controller.
+            should_enter_context: Whether entering the context of the rate controller
+                should also enter the context of the underlying buckets.
+                Defaults to True.
             max_concurrency: The maximum amount of concurrent requests allowed.
                 Defaults to `None` (no limit).
             max_pending: The maximum amount of requests waiting to be processed.
@@ -54,7 +58,7 @@ class Scheduler(RateController):
             queue_factory: The factory for initializing the request queues.
                 Defaults to :class:`.PriorityQueue`: requests are processed by ascending weight.
         """
-        super().__init__(bucket, max_concurrency, **kwargs)
+        super().__init__(*buckets, should_enter_context=should_enter_context, max_concurrency=max_concurrency, **kwargs)
         validate_max_pending(max_pending)
         self._max_pending = max_pending
         self._pending_requests = 0
@@ -63,9 +67,10 @@ class Scheduler(RateController):
 
     @override
     async def __aenter__(self) -> Self:
+        await super().__aenter__()
         self._task_group = await create_task_group().__aenter__()
         self._task_group.start_soon(self._listen_to_refills)
-        return await super().__aenter__()
+        return self
 
     async def _listen_to_refills(self) -> NoReturn:
         """Process queued requests every time new tokens are available."""
@@ -76,14 +81,19 @@ class Scheduler(RateController):
 
     @override
     async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
-        """Exit the scheduler's context."""
         self._task_group.cancel_scope.cancel()
         await self._task_group.__aexit__(*exc_info)
         return await super().__aexit__(*exc_info)
 
     @override
     def __repr__(self) -> str:
-        return mk_repr(self, bucket=self._bucket, max_concurrency=self._max_concurrency, max_pending=self._max_pending)
+        return mk_repr(
+            self,
+            self._bucket,
+            should_enter_context=self._should_enter_context,
+            max_concurrency=self._max_concurrency,
+            max_pending=self._max_pending,
+        )
 
     @asynccontextmanager
     @override

@@ -10,8 +10,8 @@ async def request_print(controller: RateController, start_time: float) -> None:
         print(f'Elapsed: {current_time() - start_time :.1f} seconds')
 
 async def main() -> None:
-    async with FixedWindowCounter(capacity=2, duration=Duration.SECOND) as bucket, \
-            Scheduler(bucket) as scheduler:
+    bucket = FixedWindowCounter(capacity=2, duration=Duration.SECOND)
+    async with Scheduler(bucket) as scheduler:
         await gather(*(
             request_print(scheduler, current_time())
             for _ in range(3)

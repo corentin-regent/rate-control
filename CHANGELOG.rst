@@ -6,15 +6,19 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
-API changes
+Breaking changes
 ^^^^^^^^^^^
 
-* **Breaking change**: Unified the API for the rate controllers.
+* Unified the API for the rate controllers.
 
   * Now both the ``RateLimiter`` and the ``Scheduler`` use the following signature:
     ``async with controller.request(tokens): ...``
 
   * The ``RateLimiter`` can now also be instantiated in an ``async with RateLimiter(...)`` statement.
+
+* Rate controllers now manage their bucket's context in their ``async with`` statement,
+  so that we don't need to enter manually the bucket's context and then the rate controller's context.
+  This behavior can be disabled using the ``should_enter_context`` flag in the constructor.
 
 Miscellaneous
 ^^^^^^^^^^^^^

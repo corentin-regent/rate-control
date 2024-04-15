@@ -15,9 +15,9 @@ from tests import assert_not_raises, checkpoints
 
 if sys.version_info >= (3, 9):
     from builtins import tuple as Tuple
-    from collections.abc import AsyncIterator, Awaitable, Callable
+    from collections.abc import AsyncIterator, Awaitable, Callable, Collection
 else:
-    from typing import AsyncIterator, Awaitable, Callable, Tuple
+    from typing import AsyncIterator, Awaitable, Callable, Collection, Tuple
 
 
 class _Called:
@@ -37,7 +37,9 @@ def mocked_window_counter(fixed_window_counter: Bucket) -> Mock:
 
 @pytest.fixture
 async def scheduler(mocked_window_counter: Mock, max_concurrency: int, max_pending: int) -> AsyncIterator[Scheduler]:
-    async with Scheduler(mocked_window_counter, max_concurrency=max_concurrency, max_pending=max_pending) as _scheduler:
+    async with Scheduler(
+        mocked_window_counter, should_enter_context=False, max_concurrency=max_concurrency, max_pending=max_pending
+    ) as _scheduler:
         yield _scheduler
 
 
@@ -222,6 +224,35 @@ async def test_not_entering_context(mock_bucket: Bucket) -> None:
 
 
 @pytest.mark.anyio
+async def test_multiple_buckets(mock_buckets: Collection[Mock], any_token: float) -> None:
+    async with Scheduler(*mock_buckets, should_enter_context=False) as scheduler, scheduler.request(any_token):
+        for bucket in mock_buckets:
+            bucket.acquire.assert_called_once_with(any_token)
+
+
+@pytest.mark.anyio
+async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
+    async with Scheduler(*mock_buckets, should_enter_context=True):
+        for bucket in mock_buckets:
+            bucket.__aenter__.assert_awaited_once()
+    for bucket in mock_buckets:
+        bucket.__aexit__.assert_awaited_once()
+
+
+@pytest.mark.anyio
+async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
+    async with Scheduler(*mock_buckets, should_enter_context=False):
+        for bucket in mock_buckets:
+            bucket.__aenter__.assert_not_called()
+    for bucket in mock_buckets:
+        bucket.__aexit__.assert_not_called()
+
+
+@pytest.mark.anyio
 async def test_repr(mock_bucket: Mock, max_concurrency: int, max_pending: int) -> None:
-    scheduler = Scheduler(mock_bucket, max_concurrency=max_concurrency, max_pending=max_pending)
-    assert repr(scheduler) == f'Scheduler(bucket={mock_bucket!r}, {max_concurrency=}, {max_pending=})'
+    scheduler = Scheduler(
+        mock_bucket, should_enter_context=True, max_concurrency=max_concurrency, max_pending=max_pending
+    )
+    assert (
+        repr(scheduler) == f'Scheduler({mock_bucket!r}, should_enter_context=True, {max_concurrency=}, {max_pending=})'
+    )

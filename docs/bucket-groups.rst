@@ -36,6 +36,10 @@ Shorter periods of time are used so that you can run this example at home:
 Composite buckets
 -----------------
 
-:class:`.BucketGroup` is a subclass of :class:`.Bucket`.
-Therefore, everything you may do with buckets, you can also do with bucket groups,
+What happens under the hood in the above example is that the rate limiter groups
+the two buckets in a :class:`.BucketGroup`, which does the job of watching the
+replenishments for each of the underlying buckets.
+
+:class:`.BucketGroup` is a subclass of :class:`.Bucket`,
+therefore everything you may do with buckets, you can also do with bucket groups,
 may it be consuming tokens, waiting for refill, or even forming token groups of token groups!

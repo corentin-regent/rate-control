@@ -10,8 +10,8 @@ async def heavy_request(rate_limiter: RateLimiter) -> None:
         print('Executed heavy request')
 
 async def main() -> None:
-    async with FixedWindowCounter(capacity=3, duration=Duration.HOUR) as bucket:
-        rate_limiter = RateLimiter(bucket)
+    bucket = FixedWindowCounter(capacity=3, duration=Duration.HOUR)
+    async with RateLimiter(bucket) as rate_limiter:
         await heavy_request(rate_limiter)
         try:
             await heavy_request(rate_limiter)
