@@ -4,13 +4,18 @@ __all__ = [
 
 import sys
 from contextlib import AsyncExitStack, suppress
-from typing import Any
+from typing import Any, Iterator
 
 from anyio import WouldBlock, create_memory_object_stream, create_task_group
 
 from rate_control._helpers import mk_repr
 from rate_control._helpers._validation import validate_buckets
 from rate_control.buckets import Bucket
+
+if sys.version_info >= (3, 9):
+    from collections.abc import Iterable
+else:
+    from typing import Iterable
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -23,7 +28,7 @@ else:
     from typing_extensions import override
 
 
-class BucketGroup(Bucket):
+class BucketGroup(Bucket, Iterable[Bucket]):
     """Bucket that aggregates other buckets."""
 
     def __init__(self, *buckets: Bucket, should_enter_context: bool = True, **kwargs: Any) -> None:
@@ -55,6 +60,10 @@ class BucketGroup(Bucket):
     async def __aexit__(self, *exc_info: Any) -> bool:
         self._task_group.cancel_scope.cancel()
         return await self._stack.__aexit__(*exc_info)
+
+    @override
+    def __iter__(self) -> Iterator[Bucket]:
+        return iter(self._buckets)
 
     async def _init_buckets(self) -> None:
         for bucket in self._buckets:

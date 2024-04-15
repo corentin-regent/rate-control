@@ -104,6 +104,11 @@ async def test_wait_for_refill(
 
 
 @pytest.mark.anyio
+async def test_iter(mocked_bucket_group: BucketGroup, mock_buckets: Collection[Mock]) -> None:
+    assert set(mocked_bucket_group) == set(mock_buckets)
+
+
+@pytest.mark.anyio
 async def test_repr(mock_bucket: Mock, fixed_window_counter: Bucket) -> None:
     bucket_group = BucketGroup(mock_bucket, fixed_window_counter, should_enter_context=False)
     assert repr(bucket_group) == f'BucketGroup({mock_bucket!r}, {fixed_window_counter!r}, should_enter_context=False)'

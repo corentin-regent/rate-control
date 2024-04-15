@@ -7,7 +7,7 @@ Unreleased
 ----------
 
 Breaking changes
-^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
 
 * Unified the API for the rate controllers.
 
@@ -19,6 +19,11 @@ Breaking changes
 * Rate controllers now manage their bucket's context in their ``async with`` statement,
   so that we don't need to enter manually the bucket's context and then the rate controller's context.
   This behavior can be disabled using the ``should_enter_context`` flag in the constructor.
+
+New Features
+^^^^^^^^^^^^
+
+* The ``BucketGroup`` class now implements the ``Iterable[Bucket]`` protocol.
 
 Miscellaneous
 ^^^^^^^^^^^^^
