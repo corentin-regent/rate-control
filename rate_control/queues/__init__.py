@@ -1,8 +1,8 @@
 __all__ = [
-    'Queue',
     'FifoQueue',
     'LifoQueue',
     'PriorityQueue',
+    'Queue',
 ]
 
 from ._abc import Queue
