@@ -80,7 +80,8 @@ branch = true
 show_missing = true
 skip_covered = true
 exclude_also = [
-    "if TYPE_CHECKING:"
+    "if TYPE_CHECKING:",
+    "...",
 ]
 
 [tool.mypy]
