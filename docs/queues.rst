@@ -37,4 +37,3 @@ All you have to do is create your own
 implementation of the :class:`.Queue` abstract class,
 pass it as an argument of the :class:`.Scheduler`,
 and you will be ready to go!
-

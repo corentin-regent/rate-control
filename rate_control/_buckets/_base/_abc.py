@@ -21,7 +21,7 @@ else:
 
 
 class Bucket(ABC):
-    """Abstract base class for all buckets."""
+    """Abstract base class for buckets."""
 
     async def __aenter__(self) -> Self:
         """Enter the bucket context.

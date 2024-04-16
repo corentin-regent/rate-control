@@ -9,6 +9,12 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency: pypi
+    environment:
+      name: pypi
+      url: https://pypi.org/project/rate-control/
 
     steps:
       - name: Check out repository
@@ -26,6 +32,5 @@ jobs:
         uses: corentin-regent/poetrel@v1
         with:
           changelog: CHANGELOG.rst
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           pypi-token: ${{ secrets.PYPI_TOKEN }}
           setup-poetry: false

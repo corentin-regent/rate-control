@@ -6,7 +6,7 @@ from anyio.abc import TaskGroup
 from anyio.lowlevel import checkpoint
 
 from rate_control import RateLimit
-from rate_control.buckets import LeakyBucket
+from rate_control._buckets import LeakyBucket
 from tests import assert_not_raises, checkpoints
 
 if sys.version_info >= (3, 9):

@@ -1,4 +1,8 @@
 Queues
 ======
 
-.. automodule:: rate_control.queues
+.. autoclass:: rate_control.queues.Queue
+
+.. autoclass:: rate_control.queues.FifoQueue
+.. autoclass:: rate_control.queues.LifoQueue
+.. autoclass:: rate_control.queues.PriorityQueue

@@ -2,8 +2,8 @@ __all__ = [
     'CapacityUpdatingBucket',
 ]
 
+from rate_control._buckets._base._token_based import TokenBasedBucket
 from rate_control._helpers._validation import validate_capacity
-from rate_control.buckets._base._token_based import TokenBasedBucket
 
 
 class CapacityUpdatingBucket(TokenBasedBucket):

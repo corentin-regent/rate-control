@@ -2,8 +2,8 @@ Weighting requests
 ==================
 
 Sometimes, some requests are more resource-intensive than others.
-You may want to allow making more less of these heavy requests
-than for lightweight ones.
+You may want to allow making less of these heavy requests
+and more lightweight ones.
 
 Here is how you can specify a cost for each request with Rate Control:
 

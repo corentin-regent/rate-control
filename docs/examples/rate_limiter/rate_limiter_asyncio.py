@@ -1,14 +1,12 @@
 from asyncio import run
-from rate_control import Duration, RateLimit, RateLimiter
-from rate_control.buckets import FixedWindowCounter
+from rate_control import Duration, FixedWindowCounter, RateLimit, RateLimiter
 
 async def main() -> None:
-    async with FixedWindowCounter(capacity=2, duration=Duration.MINUTE) as bucket:
-        rate_limiter = RateLimiter(bucket)
-
+    bucket = FixedWindowCounter(capacity=2, duration=Duration.MINUTE)
+    async with RateLimiter(bucket) as rate_limiter:
         for _ in range(3):
             try:
-                with rate_limiter.hold():
+                async with rate_limiter.request():
                     print('Request executed')
             except RateLimit:
                 print('Request rejected')

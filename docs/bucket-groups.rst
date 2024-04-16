@@ -10,7 +10,7 @@ as well as a one that watches a shorter period of time.
 
 For example, if you want to interact with the Github API,
 `here <https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api>`_
-are **some** specifications for rate limits:
+are **some** specifications for the rate limits:
 
 * 5000 requests are allowed per hour.
 * 900 *points* are allowed per minute per REST API endpoint.
@@ -36,8 +36,10 @@ Shorter periods of time are used so that you can run this example at home:
 Composite buckets
 -----------------
 
-:class:`.BucketGroup` is a subclass of :class:`.Bucket`.
-Therefore, everything you may do with buckets,
-you can also do with bucket groups,
-may it be consuming tokens, waiting for refill,
-or even forming token groups of token groups!
+What happens under the hood in the above example is that the rate limiter groups
+the two buckets in a :class:`.BucketGroup`, which does the job of watching the
+replenishments for each of the underlying buckets.
+
+:class:`.BucketGroup` is a subclass of :class:`.Bucket`,
+therefore everything you may do with buckets, you can also do with bucket groups,
+may it be consuming tokens, waiting for refill, or even forming token groups of token groups!

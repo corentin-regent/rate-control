@@ -8,8 +8,8 @@ from typing import Any, Optional
 
 from anyio import Event, create_task_group, sleep
 
+from rate_control._buckets._base._token_based import TokenBasedBucket
 from rate_control._helpers._validation import validate_delay
-from rate_control.buckets._base._token_based import TokenBasedBucket
 
 if sys.version_info >= (3, 11):
     from typing import Self

@@ -3,21 +3,27 @@ __all__ = [
 ]
 
 import sys
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 
-from rate_control._controllers._base import RateController
+from rate_control._controllers._abc import RateController
 
 if sys.version_info >= (3, 9):
-    from collections.abc import Iterator
+    from collections.abc import AsyncIterator
 else:
-    from typing import Iterator
+    from typing import AsyncIterator
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 
 class RateLimiter(RateController):
     """Rate controller that raises an error if a request cannot be fulfilled instantly."""
 
-    @contextmanager
-    def hold(self, tokens: float = 1) -> Iterator[None]:
+    @asynccontextmanager
+    @override
+    async def request(self, tokens: float = 1) -> AsyncIterator[None]:
         """Context manager that acquires the given amount of tokens while holding concurrency.
 
         Args:

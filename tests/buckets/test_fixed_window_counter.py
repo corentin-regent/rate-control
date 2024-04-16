@@ -7,7 +7,7 @@ from anyio.abc import TaskGroup
 from anyio.lowlevel import checkpoint
 
 from rate_control import RateLimit
-from rate_control.buckets import FixedWindowCounter
+from rate_control._buckets import FixedWindowCounter
 from tests import assert_not_raises, checkpoints
 
 if sys.version_info >= (3, 9):

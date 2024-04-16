@@ -9,12 +9,12 @@ from typing import Any, NoReturn, Optional
 from anyio import create_task_group, get_cancelled_exc_class
 from anyio.lowlevel import checkpoint
 
-from rate_control._controllers._base import RateController
+from rate_control._buckets import Bucket
+from rate_control._controllers._abc import RateController
 from rate_control._enums import Priority
 from rate_control._errors import RateLimit, ReachedMaxPending
 from rate_control._helpers import Request, mk_repr
 from rate_control._helpers._validation import validate_max_pending
-from rate_control.buckets import Bucket
 from rate_control.queues import PriorityQueue, Queue
 
 if sys.version_info >= (3, 9):
@@ -34,11 +34,12 @@ else:
 
 
 class Scheduler(RateController):
-    """Rate controller that schedule requests for later processing."""
+    """Rate controller that schedules requests for later processing."""
 
     def __init__(
         self,
-        bucket: Bucket,
+        *buckets: Bucket,
+        should_enter_context: bool = True,
         max_concurrency: Optional[int] = None,
         max_pending: Optional[int] = None,
         queue_factory: Callable[[], Queue[Request]] = PriorityQueue,
@@ -46,7 +47,10 @@ class Scheduler(RateController):
     ) -> None:
         """
         Args:
-            bucket: The bucket that will be managed by the rate controller.
+            buckets: The buckets that will be managed by the rate controller.
+            should_enter_context: Whether entering the context of the rate controller
+                should also enter the context of the underlying buckets.
+                Defaults to True.
             max_concurrency: The maximum amount of concurrent requests allowed.
                 Defaults to `None` (no limit).
             max_pending: The maximum amount of requests waiting to be processed.
@@ -54,18 +58,16 @@ class Scheduler(RateController):
             queue_factory: The factory for initializing the request queues.
                 Defaults to :class:`.PriorityQueue`: requests are processed by ascending weight.
         """
-        super().__init__(bucket, max_concurrency, **kwargs)
+        super().__init__(*buckets, should_enter_context=should_enter_context, max_concurrency=max_concurrency, **kwargs)
         validate_max_pending(max_pending)
         self._max_pending = max_pending
         self._pending_requests = 0
         self._queues = [queue_factory() for _ in Priority]
         self._is_processing_requests = False
 
+    @override
     async def __aenter__(self) -> Self:
-        """Enter the scheduler's context.
-
-        Starts listening to the underlying bucket for replenishments.
-        """
+        await super().__aenter__()
         self._task_group = await create_task_group().__aenter__()
         self._task_group.start_soon(self._listen_to_refills)
         return self
@@ -77,29 +79,37 @@ class Scheduler(RateController):
             await self._process_queued_requests()
             await checkpoint()
 
-    async def __aexit__(self, *exc_info: Any) -> None:
-        """Exit the scheduler's context."""
+    @override
+    async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
         self._task_group.cancel_scope.cancel()
         await self._task_group.__aexit__(*exc_info)
+        return await super().__aexit__(*exc_info)
 
     @override
     def __repr__(self) -> str:
-        return mk_repr(self, bucket=self._bucket, max_concurrency=self._max_concurrency, max_pending=self._max_pending)
+        return mk_repr(
+            self,
+            self._bucket,
+            should_enter_context=self._should_enter_context,
+            max_concurrency=self._max_concurrency,
+            max_pending=self._max_pending,
+        )
 
     @asynccontextmanager
-    async def schedule(
+    @override
+    async def request(
         self,
-        cost: float = 1,
+        tokens: float = 1,
         priority: Priority = Priority.NORMAL,
         fill_or_kill: bool = False,
     ) -> AsyncIterator[None]:
         """Asynchronous context manager that schedules the execution of the contained statements.
 
-        Waits until all the conditions of token disponibility and allowed concurrency are met,
+        Waits until all the conditions of token availability and allowed concurrency are met,
         before actually consuming tokens and holding a spot for the concurrency.
 
         Args:
-            cost: The number of tokens required for the request.
+            tokens: The number of tokens required for the request.
                 Defaults to `1`.
             priority: The priority of the request.
                 Requests with higher priority will be processed before the others.
@@ -115,12 +125,12 @@ class Scheduler(RateController):
         """
         if not hasattr(self, '_task_group'):
             raise RuntimeError(f"Make sure to enter the scheduler's context using 'async with {self}'")
-        if not self.can_acquire(cost):
+        if not self.can_acquire(tokens):
             if fill_or_kill:
-                raise RateLimit(f'Cannot process the request for {cost} tokens.')
+                raise RateLimit(f'Cannot process the request for {tokens} tokens.')
             else:
-                await self._request(cost, priority)
-        self._bucket.acquire(cost)
+                await self._perform_request(tokens, priority)
+        self._bucket.acquire(tokens)
         with self._hold_concurrency():
             yield
 
@@ -163,7 +173,7 @@ class Scheduler(RateController):
         request.fire()
         await request.wait_for_ack()
 
-    async def _request(self, tokens: float, priority: Priority) -> None:
+    async def _perform_request(self, tokens: float, priority: Priority) -> None:
         """Perform a request to acquire the given amount of tokens, with the given priority.
 
         Args:
