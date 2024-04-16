@@ -8,10 +8,10 @@ from contextlib import asynccontextmanager, contextmanager
 from typing import Any, Optional
 
 from rate_control._bucket_group import BucketGroup
+from rate_control._buckets import Bucket
 from rate_control._errors import RateLimit
 from rate_control._helpers import mk_repr
 from rate_control._helpers._validation import validate_buckets, validate_max_concurrency
-from rate_control.buckets import Bucket
 
 if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator, Iterator

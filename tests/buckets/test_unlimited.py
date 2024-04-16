@@ -7,7 +7,7 @@ from aiofastforward import FastForward
 from anyio.abc import TaskGroup
 from anyio.lowlevel import checkpoint
 
-from rate_control.buckets import UnlimitedBucket
+from rate_control._buckets import UnlimitedBucket
 from tests import assert_not_raises
 
 if sys.version_info >= (3, 9):

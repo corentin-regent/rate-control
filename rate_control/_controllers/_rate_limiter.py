@@ -5,7 +5,7 @@ __all__ = [
 import sys
 from contextlib import asynccontextmanager
 
-from rate_control.controllers._abc import RateController
+from rate_control._controllers._abc import RateController
 
 if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator

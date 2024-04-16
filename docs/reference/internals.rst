@@ -8,14 +8,14 @@ you are seeking to contribute to the library.
 Bucket mixins
 -------------
 
-.. autoclass:: rate_control.buckets._base.TokenBasedBucket
+.. autoclass:: rate_control._buckets._base.TokenBasedBucket
    :no-inherited-members:
 
-.. autoclass:: rate_control.buckets._base.BaseRateBucket
+.. autoclass:: rate_control._buckets._base.BaseRateBucket
 
-.. autoclass:: rate_control.buckets._base.BaseWindowedTokenBucket
+.. autoclass:: rate_control._buckets._base.BaseWindowedTokenBucket
 
-.. autoclass:: rate_control.buckets._base.CapacityUpdatingBucket
+.. autoclass:: rate_control._buckets._base.CapacityUpdatingBucket
     :no-inherited-members:
 
 Miscellaneous

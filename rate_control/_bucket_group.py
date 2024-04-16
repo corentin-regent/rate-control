@@ -8,9 +8,9 @@ from typing import Any, Iterator
 
 from anyio import WouldBlock, create_memory_object_stream, create_task_group
 
+from rate_control._buckets import Bucket
 from rate_control._helpers import mk_repr
 from rate_control._helpers._validation import validate_buckets
-from rate_control.buckets import Bucket
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable

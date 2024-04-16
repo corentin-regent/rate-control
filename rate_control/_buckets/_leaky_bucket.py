@@ -6,9 +6,9 @@ import math
 import sys
 from typing import Any
 
+from rate_control._buckets._base import BaseRateBucket
 from rate_control._errors import RateLimit
 from rate_control._helpers import mk_repr
-from rate_control.buckets._base import BaseRateBucket
 
 if sys.version_info >= (3, 12):
     from typing import override

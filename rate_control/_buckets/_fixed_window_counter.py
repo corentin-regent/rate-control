@@ -5,7 +5,7 @@ __all__ = [
 import sys
 from typing import Any
 
-from rate_control.buckets._base import BaseWindowedTokenBucket, CapacityUpdatingBucket
+from rate_control._buckets._base import BaseWindowedTokenBucket, CapacityUpdatingBucket
 
 if sys.version_info >= (3, 12):
     from typing import override

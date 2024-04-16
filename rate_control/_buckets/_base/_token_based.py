@@ -6,8 +6,8 @@ import sys
 from abc import ABC
 from typing import Any
 
+from rate_control._buckets._base._abc import Bucket
 from rate_control._helpers._validation import validate_capacity, validate_tokens
-from rate_control.buckets._base._abc import Bucket
 
 if sys.version_info >= (3, 12):
     from typing import override

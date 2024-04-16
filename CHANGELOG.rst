@@ -20,16 +20,14 @@ Breaking changes
   so that we don't need to enter manually the bucket's context and then the rate controller's context.
   This behavior can be disabled using the ``should_enter_context`` flag in the constructor.
 
+* The ``rate_control.buckets`` module is now private.
+  The ``RateController`` base class, and all buckets,
+  are now exported in the main ``rate_control`` module.
+
 New Features
 ^^^^^^^^^^^^
 
 * The ``BucketGroup`` class now implements the ``Iterable[Bucket]`` protocol.
-
-Miscellaneous
-^^^^^^^^^^^^^
-
-* The ``RateController`` base class, and all buckets,
-  are now exported in the main ``rate_control`` module.
 
 1.1.0
 -----

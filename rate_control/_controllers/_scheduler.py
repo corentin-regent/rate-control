@@ -9,12 +9,12 @@ from typing import Any, NoReturn, Optional
 from anyio import create_task_group, get_cancelled_exc_class
 from anyio.lowlevel import checkpoint
 
+from rate_control._buckets import Bucket
+from rate_control._controllers._abc import RateController
 from rate_control._enums import Priority
 from rate_control._errors import RateLimit, ReachedMaxPending
 from rate_control._helpers import Request, mk_repr
 from rate_control._helpers._validation import validate_max_pending
-from rate_control.buckets import Bucket
-from rate_control.controllers._abc import RateController
 from rate_control.queues import PriorityQueue, Queue
 
 if sys.version_info >= (3, 9):

@@ -6,7 +6,7 @@ import sys
 
 from anyio import sleep_forever
 
-from rate_control.buckets._base import Bucket
+from rate_control._buckets._base import Bucket
 
 if sys.version_info >= (3, 12):
     from typing import override
