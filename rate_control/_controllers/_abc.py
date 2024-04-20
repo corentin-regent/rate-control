@@ -11,7 +11,7 @@ from rate_control._bucket_group import BucketGroup
 from rate_control._buckets import Bucket
 from rate_control._errors import RateLimit
 from rate_control._helpers import mk_repr
-from rate_control._helpers._validation import validate_buckets, validate_max_concurrency
+from rate_control._helpers._validation import validate_max_concurrency
 
 if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator, Iterator
@@ -41,18 +41,21 @@ class RateController(ABC):
     ) -> None:
         """
         Args:
-            bucket: The buckets that will be managed by the rate controller.
+            buckets: The buckets that will be managed by the rate controller, optional.
             should_enter_context: Whether entering the context of the rate controller
-                should also enter the context of the underlying buckets.
+                should also enter the context of the underlying buckets, if any.
                 Defaults to True.
             max_concurrency: The maximum amount of concurrent requests allowed.
                 Defaults to `None` (no limit).
         """
         super().__init__(**kwargs)
-        validate_buckets(buckets)
         validate_max_concurrency(max_concurrency)
         self._bucket = (
-            buckets[0] if len(buckets) == 1 else BucketGroup(*buckets, should_enter_context=should_enter_context)
+            None
+            if not buckets
+            else buckets[0]
+            if len(buckets) == 1
+            else BucketGroup(*buckets, should_enter_context=should_enter_context)
         )
         self._should_enter_context = should_enter_context
         self._max_concurrency = max_concurrency
@@ -64,7 +67,7 @@ class RateController(ABC):
         Also enters the context of the underlying buckets,
         if the `should_enter_context` flag was set to `True`.
         """
-        if self._should_enter_context:
+        if self._should_enter_context and self._bucket is not None:
             await self._bucket.__aenter__()
         return self
 
@@ -74,14 +77,21 @@ class RateController(ABC):
         Also exits the context of the underlying buckets,
         if the `should_enter_context` flag was set to `True`.
         """
-        if self._should_enter_context:
+        if self._should_enter_context and self._bucket is not None:
             await self._bucket.__aexit__(*exc_info)
         return False
 
     @override
     def __repr__(self) -> str:
-        return mk_repr(
-            self, self._bucket, should_enter_context=self._should_enter_context, max_concurrency=self._max_concurrency
+        return (
+            mk_repr(
+                self,
+                self._bucket,
+                should_enter_context=self._should_enter_context,
+                max_concurrency=self._max_concurrency,
+            )
+            if self._bucket is not None
+            else mk_repr(self, max_concurrency=self._max_concurrency)
         )
 
     def can_acquire(self, tokens: float = 1) -> bool:
@@ -93,7 +103,7 @@ class RateController(ABC):
         Returns:
             Whether a request for the given amount of tokens can be processed instantly.
         """
-        return not self._is_concurrency_limited and self._bucket.can_acquire(tokens)
+        return not self._is_concurrency_limited and (self._bucket is None or self._bucket.can_acquire(tokens))
 
     @asynccontextmanager
     @abstractmethod

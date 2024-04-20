@@ -36,16 +36,6 @@ Incoming requests consume a certain amount of tokens from the bucket,
 and the tokens consumed by each request are replenished
 ``duration`` seconds after the request has been made.
 
-:class:`.UnlimitedBucket`
--------------------------
-
-As the name suggests, the :class:`.UnlimitedBucket` has no restriction on
-the amount of tokens it can acquire.
-
-It can be useful for situations where you would like to set
-a concurrency limit but no rate limits per se, for example
-if you are looking to prevent overwhelming your web server with requests.
-
 Integrating custom bucket algorithms
 ------------------------------------
 

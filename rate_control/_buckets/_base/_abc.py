@@ -46,12 +46,13 @@ class Bucket(ABC):
 
     @abstractmethod
     def can_acquire(self, tokens: float) -> bool:
-        """
+        """Whether the given amount of tokens can be acquired.
+
         Args:
             tokens: The amount of tokens that we want to acquire.
 
         Returns:
-            Whether the given amount of tokens is available.
+            Whether the given amount of tokens is available to consume.
         """
 
     @abstractmethod

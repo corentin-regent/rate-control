@@ -47,9 +47,9 @@ class Scheduler(RateController):
     ) -> None:
         """
         Args:
-            buckets: The buckets that will be managed by the rate controller.
+            buckets: The buckets that will be managed by the rate controller, optional.
             should_enter_context: Whether entering the context of the rate controller
-                should also enter the context of the underlying buckets.
+                should also enter the context of the underlying buckets, if any.
                 Defaults to True.
             max_concurrency: The maximum amount of concurrent requests allowed.
                 Defaults to `None` (no limit).
@@ -69,11 +69,13 @@ class Scheduler(RateController):
     async def __aenter__(self) -> Self:
         await super().__aenter__()
         self._task_group = await create_task_group().__aenter__()
-        self._task_group.start_soon(self._listen_to_refills)
+        if self._bucket is not None:
+            self._task_group.start_soon(self._listen_to_refills)
         return self
 
     async def _listen_to_refills(self) -> NoReturn:
         """Process queued requests every time new tokens are available."""
+        assert self._bucket is not None
         while True:
             await self._bucket.wait_for_refill()
             await self._process_queued_requests()
@@ -87,12 +89,16 @@ class Scheduler(RateController):
 
     @override
     def __repr__(self) -> str:
-        return mk_repr(
-            self,
-            self._bucket,
-            should_enter_context=self._should_enter_context,
-            max_concurrency=self._max_concurrency,
-            max_pending=self._max_pending,
+        return (
+            mk_repr(
+                self,
+                self._bucket,
+                should_enter_context=self._should_enter_context,
+                max_concurrency=self._max_concurrency,
+                max_pending=self._max_pending,
+            )
+            if self._bucket is not None
+            else mk_repr(self, max_concurrency=self._max_concurrency, max_pending=self._max_pending)
         )
 
     @asynccontextmanager
@@ -129,14 +135,15 @@ class Scheduler(RateController):
             if fill_or_kill:
                 raise RateLimit(f'Cannot process the request for {tokens} tokens.')
             else:
-                await self._perform_request(tokens, priority)
-        self._bucket.acquire(tokens)
+                await self._schedule_request(tokens, priority)
+        if self._bucket is not None:
+            self._bucket.acquire(tokens)
         with self._hold_concurrency():
             yield
 
     @override
     def _on_concurrency_release(self) -> None:
-        if self._max_concurrency is not None and self._concurrent_requests == self._max_concurrency - 1:
+        if self._max_concurrency is not None and self._concurrent_requests < self._max_concurrency:
             self._task_group.start_soon(self._process_queued_requests)
 
     async def _process_queued_requests(self) -> None:
@@ -146,15 +153,6 @@ class Scheduler(RateController):
         with self._hold_request_processing():
             await self._process_queues()
 
-    async def _process_queues(self) -> None:
-        while True:
-            try:
-                queue = next(filter(lambda queue: self.can_acquire(queue.head().cost), filter(None, self._queues)))
-            except StopIteration:
-                break
-            else:
-                await self._process_next_request(queue)
-
     @contextmanager
     def _hold_request_processing(self) -> Iterator[None]:
         self._is_processing_requests = True
@@ -163,18 +161,28 @@ class Scheduler(RateController):
         finally:
             self._is_processing_requests = False
 
+    async def _process_queues(self) -> None:
+        while True:
+            try:
+                queue = next(queue for queue in filter(None, self._queues) if self.can_acquire(queue.head().cost))
+            except StopIteration:
+                break
+            else:
+                await self._process_next_request(queue)
+
     async def _process_next_request(self, queue: Queue[Request]) -> None:
         """Fire the next request from the queue and wait until the underlying tokens are acquired.
 
         Tokens are not acquired directly in this method,
         in order to support request cancellation.
         """
-        request = self._pop(queue)
+        request = queue.pop()
+        self._pending_requests -= 1
         request.fire()
         await request.wait_for_ack()
 
-    async def _perform_request(self, tokens: float, priority: Priority) -> None:
-        """Perform a request to acquire the given amount of tokens, with the given priority.
+    async def _schedule_request(self, tokens: float, priority: Priority) -> None:
+        """Schedule an internal request to acquire the given amount of tokens, with the given priority.
 
         Args:
             tokens: The amount of tokens to acquire.
@@ -203,10 +211,15 @@ class Scheduler(RateController):
         Raises:
             ReachedMaxPending: The limit of pending requests was reached.
         """
-        self._check_pending_limit()
+        if self._is_pending_limited:
+            raise ReachedMaxPending
         queue = self._queues[priority]
         queue.add(request)
         self._pending_requests += 1
+
+    @property
+    def _is_pending_limited(self) -> bool:
+        return self._max_pending is not None and self._pending_requests >= self._max_pending
 
     def _discard(self, request: Request, priority: Priority) -> None:
         """Remove the given request from the queue, if it exists.
@@ -219,17 +232,3 @@ class Scheduler(RateController):
         with suppress(ValueError):
             queue.remove(request)
             self._pending_requests -= 1
-
-    def _pop(self, queue: Queue[Request]) -> Request:
-        request = queue.pop()
-        self._pending_requests -= 1
-        return request
-
-    def _check_pending_limit(self) -> None:
-        """Make sure that a new pending request can be scheduled.
-
-        Raises:
-            ReachedMaxPending: The limit of pending requests was reached.
-        """
-        if self._max_pending is not None and self._max_pending <= self._pending_requests:
-            raise ReachedMaxPending

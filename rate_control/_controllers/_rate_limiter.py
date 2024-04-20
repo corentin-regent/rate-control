@@ -29,10 +29,12 @@ class RateLimiter(RateController):
         Args:
             tokens: The number of tokens to acquire.
                 Defaults to `1`.
+
         Raises:
             RateLimit: The request cannot be fulfilled instantly.
         """
         self._assert_can_acquire(tokens)
-        self._bucket.acquire(tokens)
+        if self._bucket is not None:
+            self._bucket.acquire(tokens)
         with self._hold_concurrency():
             yield

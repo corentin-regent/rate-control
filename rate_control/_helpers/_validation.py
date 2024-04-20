@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 __all__ = [
-    'validate_buckets',
     'validate_capacity',
     'validate_delay',
     'validate_max_concurrency',
@@ -9,25 +8,7 @@ __all__ = [
     'validate_tokens',
 ]
 
-import sys
-from typing import TYPE_CHECKING, Optional
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Collection
-else:
-    from typing import Collection
-
-if TYPE_CHECKING:
-    from rate_control._buckets import Bucket
-
-
-def validate_buckets(buckets: Collection[Bucket]) -> None:
-    """
-    Raises:
-        ValueError: No bucket was provided.
-    """
-    if not buckets:
-        raise ValueError('At least one token bucket must be provided')
+from typing import Optional
 
 
 def validate_capacity(capacity: float) -> None:
