@@ -1,6 +1,9 @@
 Request queues
 ==============
 
+The :class:`.Scheduler` queues requests using the queue algorithm
+you pass to its constructor. This page is a reference for these algorithms.
+
 Available queues
 ----------------
 
@@ -12,8 +15,8 @@ The priority queue sorts requests so that they are processed by ascending weight
 This allows to let through more lightweight requests,
 that could otherwise be blocked by a heavier one.
 
-.. warning::
-    Requests with identical weight are not guaranteed
+.. note::
+    Requests with identical weights are not guaranteed
     to be processed in the order they arrived.
 
 :class:`.FifoQueue`
