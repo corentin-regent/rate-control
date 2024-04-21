@@ -1,6 +1,5 @@
 import sys
 from contextlib import AsyncExitStack
-from functools import partial
 from unittest.mock import Mock
 
 import pytest
@@ -20,20 +19,25 @@ async def rate_limiter(mock_bucket: Mock, max_concurrency: int) -> AsyncIterator
         yield rate_limiter
 
 
+@pytest.fixture
+async def rate_limiter_without_bucket(max_concurrency: int) -> AsyncIterator[RateLimiter]:
+    async with RateLimiter(max_concurrency=max_concurrency) as rate_limiter:
+        yield rate_limiter
+
+
 @pytest.mark.anyio
-async def test_argument_validation(mock_bucket: Mock, some_negative_int: int, some_positive_int: int) -> None:
-    mk_rate_limiter = partial(RateLimiter, mock_bucket)
+async def test_argument_validation(some_negative_int: int, some_positive_int: int) -> None:
     with assert_not_raises():
-        mk_rate_limiter()
+        RateLimiter()
 
     with pytest.raises(ValueError):
-        mk_rate_limiter(max_concurrency=0)
+        RateLimiter(max_concurrency=0)
     with pytest.raises(ValueError):
-        mk_rate_limiter(max_concurrency=some_negative_int)
+        RateLimiter(max_concurrency=some_negative_int)
     with assert_not_raises():
-        mk_rate_limiter(max_concurrency=None)
+        RateLimiter(max_concurrency=None)
     with assert_not_raises():
-        mk_rate_limiter(max_concurrency=some_positive_int)
+        RateLimiter(max_concurrency=some_positive_int)
 
 
 @pytest.mark.anyio
@@ -57,22 +61,21 @@ async def test_simple_rate_limiting(
 
 
 @pytest.mark.anyio
-async def test_max_concurrency(rate_limiter: RateLimiter, mock_bucket: Mock, max_concurrency: int) -> None:
-    mock_bucket.can_acquire = Mock(return_value=True)
+async def test_max_concurrency(rate_limiter_without_bucket: RateLimiter, max_concurrency: int) -> None:
     async with AsyncExitStack() as stack:
         for _ in range(max_concurrency - 1):
-            assert rate_limiter.can_acquire()
-            await stack.enter_async_context(rate_limiter.request())
+            assert rate_limiter_without_bucket.can_acquire()
+            await stack.enter_async_context(rate_limiter_without_bucket.request())
 
-        async with rate_limiter.request():
-            assert not rate_limiter.can_acquire()
+        async with rate_limiter_without_bucket.request():
+            assert not rate_limiter_without_bucket.can_acquire()
             with pytest.raises(RateLimit):
-                async with rate_limiter.request():
+                async with rate_limiter_without_bucket.request():
                     ...
 
-        assert rate_limiter.can_acquire()
+        assert rate_limiter_without_bucket.can_acquire()
         with assert_not_raises():
-            async with rate_limiter.request():
+            async with rate_limiter_without_bucket.request():
                 ...
 
 
@@ -105,3 +108,9 @@ async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> N
 async def test_repr(mock_bucket: Bucket, max_concurrency: int) -> None:
     scheduler = RateLimiter(mock_bucket, should_enter_context=False, max_concurrency=max_concurrency)
     assert repr(scheduler) == f'RateLimiter({mock_bucket!r}, should_enter_context=False, {max_concurrency=})'
+
+
+@pytest.mark.anyio
+async def test_repr_without_bucket(max_concurrency: int) -> None:
+    scheduler = RateLimiter(max_concurrency=max_concurrency)
+    assert repr(scheduler) == f'RateLimiter({max_concurrency=})'

@@ -1,8 +1,8 @@
 from trio import run
-from rate_control import RateLimit, RateLimiter, UnlimitedBucket
+from rate_control import RateLimit, RateLimiter
 
 async def main() -> None:
-    async with RateLimiter(UnlimitedBucket(), max_concurrency=1) as rate_limiter:
+    async with RateLimiter(max_concurrency=1) as rate_limiter:
         async with rate_limiter.request():
             print('First request passes')
             try:

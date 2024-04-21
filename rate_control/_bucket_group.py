@@ -10,7 +10,6 @@ from anyio import WouldBlock, create_memory_object_stream, create_task_group
 
 from rate_control._buckets import Bucket
 from rate_control._helpers import mk_repr
-from rate_control._helpers._validation import validate_buckets
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable
@@ -40,7 +39,6 @@ class BucketGroup(Bucket, Iterable[Bucket]):
                 Defaults to `True`.
         """
         super().__init__(**kwargs)
-        validate_buckets(buckets)
         self._buckets = buckets
         self._should_enter_context = should_enter_context
         self._send_stream, self._recv_stream = create_memory_object_stream[Bucket]()
@@ -89,7 +87,8 @@ class BucketGroup(Bucket, Iterable[Bucket]):
 
     @override
     def can_acquire(self, tokens: float) -> bool:
-        """
+        """Whether the given amount of tokens can be acquired.
+
         Args:
             tokens: The amount of tokens that we want to acquire.
 

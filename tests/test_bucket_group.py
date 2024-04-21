@@ -21,11 +21,6 @@ async def mocked_bucket_group(mock_buckets: Iterable[Mock]) -> AsyncIterator[Buc
         yield bucket_group
 
 
-def test_argument_validation() -> None:
-    with pytest.raises(ValueError):
-        BucketGroup()
-
-
 @pytest.mark.anyio
 async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
     async with BucketGroup(*mock_buckets, should_enter_context=True):
