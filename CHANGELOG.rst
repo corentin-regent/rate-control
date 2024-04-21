@@ -8,7 +8,7 @@ Unreleased
 
 * Now allow passing no bucket argument to the rate controllers.
 
-* **Breaking change**: Removed the obsolete ``UnlimitedBucket``.
+* **Breaking change**: Removed the now obsolete ``UnlimitedBucket``.
 
 2.0.0
 -----

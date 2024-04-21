@@ -148,10 +148,9 @@ class Scheduler(RateController):
 
     async def _process_queued_requests(self) -> None:
         """Pop and start queued requests while it is possible."""
-        if self._is_processing_requests:
-            return
-        with self._hold_request_processing():
-            await self._process_queues()
+        if not self._is_processing_requests:
+            with self._hold_request_processing():
+                await self._process_queues()
 
     @contextmanager
     def _hold_request_processing(self) -> Iterator[None]:
