@@ -6,6 +6,11 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
+Nothing changed yet.
+
+3.0.0
+-----
+
 * Now allow passing no bucket argument to the rate controllers.
 
 * **Breaking change**: Removed the now obsolete ``UnlimitedBucket``.
