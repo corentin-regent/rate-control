@@ -107,7 +107,7 @@ class RateController(ABC):
 
     @asynccontextmanager
     @abstractmethod
-    async def request(self, tokens: float = 1) -> AsyncIterator[None]:
+    async def request(self, tokens: float = 1, **kwargs: Any) -> AsyncIterator[None]:
         """Asynchronous context manager that requests the given amount of tokens before the execution.
 
         Args:
