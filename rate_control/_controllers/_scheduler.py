@@ -108,6 +108,7 @@ class Scheduler(RateController):
         tokens: float = 1,
         priority: Priority = Priority.NORMAL,
         fill_or_kill: bool = False,
+        **_: Any,
     ) -> AsyncIterator[None]:
         """Asynchronous context manager that schedules the execution of the contained statements.
 

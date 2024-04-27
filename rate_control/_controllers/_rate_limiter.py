@@ -4,6 +4,7 @@ __all__ = [
 
 import sys
 from contextlib import asynccontextmanager
+from typing import Any
 
 from rate_control._controllers._abc import RateController
 
@@ -23,7 +24,7 @@ class RateLimiter(RateController):
 
     @asynccontextmanager
     @override
-    async def request(self, tokens: float = 1) -> AsyncIterator[None]:
+    async def request(self, tokens: float = 1, **_: Any) -> AsyncIterator[None]:
         """Context manager that acquires the given amount of tokens while holding concurrency.
 
         Args:
