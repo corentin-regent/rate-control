@@ -64,6 +64,7 @@ class BucketBasedRateController(RateController, ABC):
         self._max_concurrency = max_concurrency
         self._concurrent_requests = 0
 
+    @override
     async def __aenter__(self) -> Self:
         """Enter the controller's context.
 
@@ -75,6 +76,7 @@ class BucketBasedRateController(RateController, ABC):
             await self._bucket.__aenter__()
         return self
 
+    @override
     async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
         """Exit the controller's context.
 
