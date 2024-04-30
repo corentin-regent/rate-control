@@ -18,6 +18,8 @@ _T = TypeVar('_T')
 class Queue(ABC, Generic[_T]):
     """Abstract class for representing a queue."""
 
+    __slots__ = ()
+
     @abstractmethod
     def __bool__(self) -> bool:
         """Returns whether the queue contains at least one element"""

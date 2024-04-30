@@ -22,6 +22,8 @@ _T = TypeVar('_T')
 class FifoQueue(Queue[_T]):
     """ "First In, First Out" queue."""
 
+    __slots__ = ('_queue',)
+
     def __init__(self, *elements: _T, **kwargs: Any) -> None:
         """
         Args:

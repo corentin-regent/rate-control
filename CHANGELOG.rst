@@ -8,6 +8,8 @@ Unreleased
 
 * **Breaking change**: Mixin helper methods were moved away from the ``RateController`` abstract class.
 
+* **Breaking change**: Now define ``__slots__`` in all classes for better memory management
+
 3.0.1
 -----
 

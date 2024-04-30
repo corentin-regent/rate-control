@@ -13,6 +13,8 @@ else:
 
 
 class Comparable(Protocol):
+    __slots__ = ()
+
     @abstractmethod
     def __lt__(self, other: Self, /) -> bool:
         """Comparison operator.

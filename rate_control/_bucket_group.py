@@ -30,6 +30,16 @@ else:
 class BucketGroup(Bucket, Iterable[Bucket]):
     """Bucket that aggregates other buckets."""
 
+    __slots__ = (
+        '_buckets',
+        '_recv_stream',
+        '_refill_event',
+        '_send_stream',
+        '_should_enter_context',
+        '_stack',
+        '_task_group',
+    )
+
     def __init__(self, *buckets: Bucket, should_enter_context: bool = True, **kwargs: Any) -> None:
         """
         Args:

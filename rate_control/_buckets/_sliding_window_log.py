@@ -18,6 +18,8 @@ class SlidingWindowLog(BaseWindowedTokenBucket, CapacityUpdatingBucket):
     Every consumed tokens get replenished after ``duration`` seconds.
     """
 
+    __slots__ = ()
+
     @override
     def _should_schedule_refill(self) -> bool:
         return True

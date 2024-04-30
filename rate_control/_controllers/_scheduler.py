@@ -36,6 +36,8 @@ else:
 class Scheduler(BucketBasedRateController):
     """Rate controller that schedules requests for later processing."""
 
+    __slots__ = ('_is_processing_requests', '_max_pending', '_pending_requests', '_queues', '_task_group')
+
     def __init__(
         self,
         *buckets: Bucket,

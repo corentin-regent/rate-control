@@ -19,6 +19,8 @@ class FixedWindowCounter(BaseWindowedTokenBucket, CapacityUpdatingBucket):
     The bucket refills once every ``duration`` seconds, to cap its tokens back to ``capacity``.
     """
 
+    __slots__ = ('_scheduled_refill',)
+
     def __init__(self, capacity: float, duration: float, **kwargs: Any) -> None:
         super().__init__(capacity, duration, **kwargs)
         self._scheduled_refill = False
