@@ -4,11 +4,8 @@ Request queues
 The :class:`.Scheduler` queues requests using the queue algorithm
 you pass to its constructor. This page is a reference for these algorithms.
 
-Available queues
-----------------
-
 :class:`.PriorityQueue`
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The priority queue sorts requests so that they are processed by ascending weight.
 
@@ -20,23 +17,13 @@ that could otherwise be blocked by a heavier one.
     to be processed in the order they arrived.
 
 :class:`.FifoQueue`
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 The "First In, First Out" queue schedules requests so that
 they are processed in the order they arrive.
 
 :class:`.LifoQueue`
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 The "Last In, First Out" queue schedules requests so that
 the latest ones are processed first.
-
-Integrating a custom queue algorithm
-------------------------------------
-
-None of these options fit your needs? We've got you covered!
-
-All you have to do is create your own
-implementation of the :class:`.Queue` abstract class,
-pass it as an argument of the :class:`.Scheduler`,
-and you will be ready to go!

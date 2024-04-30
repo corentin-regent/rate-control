@@ -28,6 +28,8 @@ class PriorityQueue(Queue[_T]):
         in the order they arrived.
     """
 
+    __slots__ = ('_queue',)
+
     def __init__(self, *elements: _T, **kwargs: Any) -> None:
         """
         Args:

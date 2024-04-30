@@ -21,6 +21,8 @@ _T = TypeVar('_T')
 class LifoQueue(Queue[_T]):
     """ "Last In, First Out" queue."""
 
+    __slots__ = ('_queue',)
+
     def __init__(self, *elements: _T, **kwargs: Any) -> None:
         """
         Args:

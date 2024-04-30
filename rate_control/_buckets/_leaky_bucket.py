@@ -22,6 +22,8 @@ class LeakyBucket(BaseRateBucket):
     Only one request can get executed every ``delay`` seconds.
     """
 
+    __slots__ = ('_can_pass_through',)
+
     def __init__(self, delay: float, **kwargs: Any) -> None:
         """
         Args:

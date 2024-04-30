@@ -9,6 +9,8 @@ from rate_control._helpers._validation import validate_capacity
 class CapacityUpdatingBucket(TokenBasedBucket):
     """Mixin for buckets which token capacity can be updated."""
 
+    __slots__ = ()
+
     def update_capacity(self, new_capacity: float) -> None:
         """Update the bucket's token capacity.
 

@@ -25,6 +25,8 @@ else:
 class BaseRateBucket(TokenBasedBucket, ABC):
     """Base class for token buckets that refill at a certain rate."""
 
+    __slots__ = ('_delay', '_refill_event', '_task_group')
+
     def __init__(self, capacity: float, delay: float, **kwargs: Any) -> None:
         """
         Args:

@@ -6,7 +6,7 @@ import sys
 from contextlib import asynccontextmanager
 from typing import Any
 
-from rate_control._controllers._abc import RateController
+from rate_control._controllers._bucket_based import BucketBasedRateController
 
 if sys.version_info >= (3, 9):
     from collections.abc import AsyncIterator
@@ -19,8 +19,10 @@ else:
     from typing_extensions import override
 
 
-class RateLimiter(RateController):
+class RateLimiter(BucketBasedRateController):
     """Rate controller that raises an error if a request cannot be fulfilled instantly."""
+
+    __slots__ = ()
 
     @asynccontextmanager
     @override
