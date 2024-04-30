@@ -5,6 +5,11 @@ This section documents private internal objects *for reference*.
 You will not need to manipulate them directly unless
 you are seeking to contribute to the library.
 
+Controller mixins
+-----------------
+
+.. autoclass:: rate_control._controllers._bucket_based.BucketBasedRateController
+
 Bucket mixins
 -------------
 

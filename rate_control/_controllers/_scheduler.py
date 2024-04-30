@@ -10,7 +10,7 @@ from anyio import create_task_group, get_cancelled_exc_class
 from anyio.lowlevel import checkpoint
 
 from rate_control._buckets import Bucket
-from rate_control._controllers._abc import RateController
+from rate_control._controllers._bucket_based import BucketBasedRateController
 from rate_control._enums import Priority
 from rate_control._errors import RateLimit, ReachedMaxPending
 from rate_control._helpers import Request, mk_repr
@@ -33,7 +33,7 @@ else:
     from typing_extensions import override
 
 
-class Scheduler(RateController):
+class Scheduler(BucketBasedRateController):
     """Rate controller that schedules requests for later processing."""
 
     def __init__(
