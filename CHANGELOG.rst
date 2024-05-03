@@ -6,7 +6,7 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
-Nothing changed yet.
+* Added the ``NoopController`` controller, that simply lets requests through.
 
 4.0.0
 -----
