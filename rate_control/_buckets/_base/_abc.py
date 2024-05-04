@@ -13,11 +13,6 @@ if sys.version_info >= (3, 11):
 else:
     from typing_extensions import Self
 
-if sys.version_info >= (3, 12):
-    pass
-else:
-    pass
-
 
 class Bucket(ABC):
     """Abstract base class for buckets."""
