@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 __all__ = [
     'validate_capacity',
     'validate_delay',

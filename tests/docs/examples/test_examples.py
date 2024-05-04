@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 import os.path
 import sys
-from contextlib import redirect_stdout
+from contextlib import contextmanager, redirect_stdout
 from importlib import import_module
 from io import StringIO
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 import pytest
 
@@ -17,13 +15,10 @@ else:
     from typing import Iterator, Tuple
 
 
-if TYPE_CHECKING:
-    from contextlib import contextmanager
-
-    class SubTests:
-        @contextmanager
-        def test(self, msg: Optional[str] = None, **kwargs: Any) -> Iterator[None]:
-            yield
+class SubTests:
+    @contextmanager
+    def test(self, msg: Optional[str] = None, **kwargs: Any) -> Iterator[None]:
+        yield
 
 
 @pytest.mark.slow
