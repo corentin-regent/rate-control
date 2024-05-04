@@ -18,11 +18,11 @@ def queue(any_elements: Iterable[object]) -> LifoQueue[object]:
 
 
 def test_nominal(queue: LifoQueue[object], any_elements: Sequence[object]) -> None:
-    latest_elems = ('first', b'second')
-    for elem in latest_elems:
-        queue.add(elem)
+    other_elems = ('first', b'second')
+    for other_elem in other_elems:
+        queue.add(other_elem)
 
-    for elem in chain(reversed(latest_elems), reversed(any_elements)):
+    for elem in chain(reversed(other_elems), reversed(any_elements)):
         assert queue
         assert queue.head() == elem
         assert queue.pop() == elem
