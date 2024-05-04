@@ -22,7 +22,7 @@ async def mocked_bucket_group(mock_buckets: Iterable[Mock]) -> AsyncIterator[Buc
 
 
 @pytest.mark.anyio
-async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
+async def test_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
     async with BucketGroup(*mock_buckets, should_enter_context=True):
         for bucket in mock_buckets:
             bucket.__aenter__.assert_awaited_once()
@@ -32,13 +32,11 @@ async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
 
 @pytest.mark.anyio
 async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
-    bucket_group = BucketGroup(*mock_buckets, should_enter_context=False)
-    await bucket_group.__aenter__()
+    async with BucketGroup(*mock_buckets, should_enter_context=False):
+        for bucket in mock_buckets:
+            bucket.__aenter__.assert_not_called()
     for bucket in mock_buckets:
-        bucket.__aenter__.assert_not_called()
-    await bucket_group.__aexit__(None, None, None)
-    for bucket in mock_buckets:
-        bucket.__aenter__.assert_not_called()
+        bucket.__aexit__.assert_not_called()
 
 
 @pytest.mark.anyio
@@ -49,12 +47,9 @@ async def test_acquire(
     some_tokens: float,
     any_token: float,
 ) -> None:
-    def can_acquire(tokens: float) -> bool:
-        return tokens <= some_tokens
-
     for bucket in mock_buckets:
         bucket.can_acquire = Mock(return_value=True)
-    mock_bucket.can_acquire = can_acquire
+    mock_bucket.can_acquire = lambda tokens: tokens <= some_tokens
 
     assert mocked_bucket_group.can_acquire(some_tokens)
     assert not mocked_bucket_group.can_acquire(some_tokens + any_token)
@@ -101,9 +96,10 @@ async def test_wait_for_refill(
 @pytest.mark.anyio
 async def test_iter(mocked_bucket_group: BucketGroup, mock_buckets: Collection[Mock]) -> None:
     assert set(mocked_bucket_group) == set(mock_buckets)
+    assert len(set(mocked_bucket_group)) == len(mock_buckets)
 
 
 @pytest.mark.anyio
-async def test_repr(mock_bucket: Mock, fixed_window_counter: Bucket) -> None:
-    bucket_group = BucketGroup(mock_bucket, fixed_window_counter, should_enter_context=False)
-    assert repr(bucket_group) == f'BucketGroup({mock_bucket!r}, {fixed_window_counter!r}, should_enter_context=False)'
+async def test_repr(mock_bucket: Mock, fixed_window_counter: Bucket, should_enter_context: bool) -> None:
+    bucket_group = BucketGroup(mock_bucket, fixed_window_counter, should_enter_context=should_enter_context)
+    assert repr(bucket_group) == f'BucketGroup({mock_bucket!r}, {fixed_window_counter!r}, {should_enter_context=})'

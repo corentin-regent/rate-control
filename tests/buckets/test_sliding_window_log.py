@@ -81,7 +81,11 @@ async def test_multiple_consumptions_with_int_capacity(
 
 @pytest.mark.anyio
 async def test_refill(
-    bucket: SlidingWindowLog, capacity: float, duration: float, some_positive_int: int, fast_forward: FastForward
+    bucket: SlidingWindowLog,
+    capacity: float,
+    duration: float,
+    some_positive_int: int,
+    fast_forward: FastForward,
 ) -> None:
     for _ in range(some_positive_int):
         bucket.acquire(capacity)
@@ -99,19 +103,21 @@ async def test_refill_delay(
     fast_forward: FastForward,
     tiny_delay: float,
 ) -> None:
-    bucket.acquire(capacity / 2)
+    half_capacity = capacity / 2
+    half_duration = duration / 2
+    bucket.acquire(half_capacity)
     await fast_forward(duration / 2)
-    bucket.acquire(capacity / 2)
+    bucket.acquire(half_capacity)
 
     await checkpoint()
-    await fast_forward(duration / 2 - tiny_delay)
+    await fast_forward(half_duration - tiny_delay)
     assert not bucket.can_acquire(any_token)
     await fast_forward(tiny_delay)
     await checkpoint()
-    assert bucket.can_acquire(capacity / 2)
-    assert not bucket.can_acquire(capacity / 2 + any_token)
+    assert bucket.can_acquire(half_capacity)
+    assert not bucket.can_acquire(half_capacity + any_token)
 
-    await fast_forward(duration / 2)
+    await fast_forward(half_duration)
     await checkpoint()
     assert bucket.can_acquire(capacity)
 
@@ -125,6 +131,7 @@ async def test_wait_for_refill(
     tiny_delay: float,
     task_group: TaskGroup,
 ) -> None:
+    half_duration = duration / 2
     refilled = 0
 
     async def wait_for_refill() -> None:
@@ -134,11 +141,11 @@ async def test_wait_for_refill(
 
     bucket.acquire(any_token)
     task_group.start_soon(wait_for_refill)
-    await fast_forward(duration / 2)
+    await fast_forward(half_duration)
     bucket.acquire(any_token)
     await checkpoint()
 
-    await fast_forward(duration / 2 - tiny_delay)
+    await fast_forward(half_duration - tiny_delay)
     await checkpoints(2)
     assert not refilled
     await fast_forward(tiny_delay)
@@ -146,7 +153,7 @@ async def test_wait_for_refill(
     assert refilled == 1
     task_group.start_soon(wait_for_refill)
 
-    await fast_forward(duration / 2)
+    await fast_forward(half_duration)
     await checkpoints(2)
     assert refilled == 2
 

@@ -25,7 +25,7 @@ def queue(elements: Iterable[float]) -> PriorityQueue[float]:
 
 
 def test_nominal(queue: PriorityQueue[float], elements: Sequence[float]) -> None:
-    other_elems = [1.5, 999]
+    other_elems = (1.5, 999)
     for elem in other_elems:
         queue.add(elem)
 

@@ -169,8 +169,7 @@ class Scheduler(BucketBasedRateController):
                 queue = next(queue for queue in filter(None, self._queues) if self.can_acquire(queue.head().cost))
             except StopIteration:
                 break
-            else:
-                await self._process_next_request(queue)
+            await self._process_next_request(queue)
 
     async def _process_next_request(self, queue: Queue[Request]) -> None:
         """Fire the next request from the queue and wait until the underlying tokens are acquired.

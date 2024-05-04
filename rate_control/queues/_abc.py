@@ -11,7 +11,6 @@ if sys.version_info >= (3, 12):
 else:
     from typing_extensions import override
 
-
 _T = TypeVar('_T')
 
 

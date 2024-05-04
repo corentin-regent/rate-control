@@ -18,9 +18,6 @@ class CapacityUpdatingBucket(TokenBasedBucket):
 
         Args:
             new_capacity: The new token capacity of the bucket.
-
-        Raises:
-            ValueError: Negative or zero capacity was provided.
         """
         validate_capacity(new_capacity)
         self._tokens += new_capacity - self._capacity
