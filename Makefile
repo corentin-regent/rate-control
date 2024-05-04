@@ -1,5 +1,6 @@
 .PHONY: setup
 setup:
+	@poetry lock --no-update
 	@poetry install --with dev,test,docs
 
 .PHONY: lint
