@@ -19,8 +19,8 @@ def queue(any_elements: Iterable[object]) -> FifoQueue[object]:
 
 def test_nominal(queue: FifoQueue[object], any_elements: Sequence[object]) -> None:
     other_elems = ('first', b'second')
-    for elem in other_elems:
-        queue.add(elem)
+    for other_elem in other_elems:
+        queue.add(other_elem)
 
     for elem in chain(any_elements, other_elems):
         assert queue
