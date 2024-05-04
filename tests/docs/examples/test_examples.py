@@ -24,13 +24,13 @@ class SubTests:
 @pytest.mark.slow
 def test_examples(subtests: SubTests) -> None:
     for python_file, output_file in _python_and_output_files():
-        module_name = str(python_file.with_suffix('')).replace(os.path.sep, '.')
-        with open(output_file) as f:
-            expected = f.read()
-        with StringIO() as buffer, redirect_stdout(buffer):
-            import_module(module_name)
-            actual = buffer.getvalue()
         with subtests.test(msg=python_file.name):
+            module_name = str(python_file.with_suffix('')).replace(os.path.sep, '.')
+            with open(output_file) as f:
+                expected = f.read()
+            with StringIO() as buffer, redirect_stdout(buffer):
+                import_module(module_name)
+                actual = buffer.getvalue()
             assert actual == expected
 
 
