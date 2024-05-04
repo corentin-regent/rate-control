@@ -23,6 +23,8 @@ else:
 class NoopController(RateController):
     """Rate controller that accepts all requests and does nothing."""
 
+    __slots__ = ()
+
     _instance: ClassVar['NoopController']
 
     def __new__(cls, *_: Any, **kwargs: Any) -> 'NoopController':
