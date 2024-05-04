@@ -1,6 +1,5 @@
 import sys
 from itertools import chain
-from typing import Any
 
 import pytest
 
@@ -14,21 +13,16 @@ else:
 
 
 @pytest.fixture
-def elements() -> Sequence[Any]:
-    return (123.456, 'test', -42, Any)
+def queue(any_elements: Iterable[object]) -> FifoQueue[object]:
+    return FifoQueue(*any_elements)
 
 
-@pytest.fixture
-def queue(elements: Iterable[Any]) -> FifoQueue[Any]:
-    return FifoQueue(*elements)
-
-
-def test_nominal(queue: FifoQueue[Any], elements: Sequence[Any]) -> None:
-    other_elems = ['first', 'second']
+def test_nominal(queue: FifoQueue[object], any_elements: Sequence[object]) -> None:
+    other_elems = ('first', b'second')
     for elem in other_elems:
         queue.add(elem)
 
-    for elem in chain(elements, other_elems):
+    for elem in chain(any_elements, other_elems):
         assert queue
         assert queue.head() == elem
         assert queue.pop() == elem
@@ -40,8 +34,8 @@ def test_nominal(queue: FifoQueue[Any], elements: Sequence[Any]) -> None:
         queue.pop()
 
 
-def test_removing_elements(queue: FifoQueue[Any], elements: Sequence[Any]) -> None:
-    first_elem = elements[0]
+def test_removing_any_elements(queue: FifoQueue[object], any_elements: Sequence[object]) -> None:
+    first_elem = any_elements[0]
     assert queue.head() == first_elem
 
     queue.remove(first_elem)

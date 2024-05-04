@@ -1,6 +1,7 @@
 import secrets
 import sys
 from asyncio import get_running_loop
+from contextlib import AsyncExitStack
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -45,6 +46,12 @@ async def task_group() -> AsyncIterator[TaskGroup]:
         _task_group.cancel_scope.cancel()
 
 
+@pytest.fixture
+async def async_exit_stack() -> AsyncIterator[AsyncExitStack]:
+    async with AsyncExitStack() as stack:
+        yield stack
+
+
 def _mk_mock_bucket() -> Mock:
     mock = Mock(Bucket)
     mock.acquire = Mock()
@@ -67,6 +74,11 @@ def mock_bucket(mock_buckets: Sequence[Mock]) -> Mock:
 async def fixed_window_counter(capacity: float, duration: float) -> AsyncIterator[FixedWindowCounter]:
     async with FixedWindowCounter(capacity, duration) as bucket:
         yield bucket
+
+
+@pytest.fixture
+def should_enter_context() -> bool:
+    return True
 
 
 @pytest.fixture

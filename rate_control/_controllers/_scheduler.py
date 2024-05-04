@@ -3,7 +3,7 @@ __all__ = [
 ]
 
 import sys
-from contextlib import asynccontextmanager, contextmanager, suppress
+from contextlib import asynccontextmanager, suppress
 from typing import Any, NoReturn, Optional
 
 from anyio import create_task_group, get_cancelled_exc_class
@@ -18,9 +18,9 @@ from rate_control._helpers._validation import validate_max_pending
 from rate_control.queues import PriorityQueue, Queue
 
 if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Callable, Iterator
+    from collections.abc import AsyncIterator, Callable
 else:
-    from typing import AsyncIterator, Callable, Iterator
+    from typing import AsyncIterator, Callable
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -36,7 +36,7 @@ else:
 class Scheduler(BucketBasedRateController):
     """Rate controller that schedules requests for later processing."""
 
-    __slots__ = ('_is_processing_requests', '_max_pending', '_pending_requests', '_queues', '_task_group')
+    __slots__ = ('_max_pending', '_pending_requests', '_queues', '_task_group')
 
     def __init__(
         self,
@@ -65,7 +65,6 @@ class Scheduler(BucketBasedRateController):
         self._max_pending = max_pending
         self._pending_requests = 0
         self._queues = [queue_factory() for _ in Priority]
-        self._is_processing_requests = False
 
     @override
     async def __aenter__(self) -> Self:
@@ -146,31 +145,16 @@ class Scheduler(BucketBasedRateController):
 
     @override
     def _on_concurrency_release(self) -> None:
-        if self._max_concurrency is not None and self._concurrent_requests < self._max_concurrency:
+        if self._max_concurrency is not None and self._concurrent_requests == self._max_concurrency - 1:
             self._task_group.start_soon(self._process_queued_requests)
 
     async def _process_queued_requests(self) -> None:
-        """Pop and start queued requests while it is possible."""
-        if not self._is_processing_requests:
-            with self._hold_request_processing():
-                await self._process_queues()
-
-    @contextmanager
-    def _hold_request_processing(self) -> Iterator[None]:
-        self._is_processing_requests = True
-        try:
-            yield
-        finally:
-            self._is_processing_requests = False
-
-    async def _process_queues(self) -> None:
         while True:
             try:
                 queue = next(queue for queue in filter(None, self._queues) if self.can_acquire(queue.head().cost))
             except StopIteration:
                 break
-            else:
-                await self._process_next_request(queue)
+            await self._process_next_request(queue)
 
     async def _process_next_request(self, queue: Queue[Request]) -> None:
         """Fire the next request from the queue and wait until the underlying tokens are acquired.

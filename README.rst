@@ -24,7 +24,8 @@ Key Features
 * `Request synchronization <https://rate-control.readthedocs.io/en/latest/synchronization.html>`_
 * `Request prioritization <https://rate-control.readthedocs.io/en/latest/scheduling.html#request-prioritization>`_
 * `Chaining buckets <https://rate-control.readthedocs.io/en/latest/bucket-groups.html>`_
-* Support for both asyncio_ and Trio_, through AnyIO_
+* Supports task cancellation
+* Supports both asyncio_ and Trio_, through AnyIO_
 
 .. _AnyIO: https://github.com/agronholm/anyio
 .. _asyncio: https://docs.python.org/3/library/asyncio.html

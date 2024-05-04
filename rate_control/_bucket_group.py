@@ -65,9 +65,9 @@ class BucketGroup(Bucket, Iterable[Bucket]):
         return self
 
     @override
-    async def __aexit__(self, *exc_info: Any) -> bool:
+    async def __aexit__(self, *exc_info: Any) -> None:
         self._task_group.cancel_scope.cancel()
-        return await self._stack.__aexit__(*exc_info)
+        await self._stack.__aexit__(*exc_info)
 
     @override
     def __iter__(self) -> Iterator[Bucket]:

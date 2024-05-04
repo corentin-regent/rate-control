@@ -1,7 +1,7 @@
 import sys
 from contextlib import AsyncExitStack
 from typing import Any
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 import pytest
 from aiofastforward import FastForward
@@ -29,16 +29,14 @@ class _Called:
 
 @pytest.fixture
 def mocked_window_counter(fixed_window_counter: Bucket) -> Mock:
-    mock = Mock(wraps=fixed_window_counter)
+    mock = MagicMock(wraps=fixed_window_counter)
     mock.acquire = Mock(wraps=fixed_window_counter.acquire)
     return mock
 
 
 @pytest.fixture
 async def scheduler(mocked_window_counter: Mock, max_concurrency: int, max_pending: int) -> AsyncIterator[Scheduler]:
-    async with Scheduler(
-        mocked_window_counter, should_enter_context=False, max_concurrency=max_concurrency, max_pending=max_pending
-    ) as _scheduler:
+    async with Scheduler(mocked_window_counter, max_concurrency=max_concurrency, max_pending=max_pending) as _scheduler:
         yield _scheduler
 
 
@@ -147,22 +145,24 @@ async def test_request_priority(
 
 @pytest.mark.anyio
 async def test_max_concurrency(
-    scheduler_without_bucket: Scheduler, max_concurrency: int, task_group: TaskGroup
+    scheduler_without_bucket: Scheduler,
+    max_concurrency: int,
+    task_group: TaskGroup,
+    async_exit_stack: AsyncExitStack,
 ) -> None:
-    async with AsyncExitStack() as stack:
-        for _ in range(max_concurrency - 1):
-            assert scheduler_without_bucket.can_acquire()
-            await stack.enter_async_context(scheduler_without_bucket.request())
-
-        schedule_additional, additional_called = _prepare_request(scheduler_without_bucket)
+    for _ in range(max_concurrency - 1):
         assert scheduler_without_bucket.can_acquire()
-        async with scheduler_without_bucket.request():
-            assert not scheduler_without_bucket.can_acquire()
-            task_group.start_soon(schedule_additional)
-            await checkpoints(2)
-            assert not additional_called
-        await checkpoints(2)
-        assert additional_called
+        await async_exit_stack.enter_async_context(scheduler_without_bucket.request())
+
+    schedule_additional, additional_called = _prepare_request(scheduler_without_bucket)
+    assert scheduler_without_bucket.can_acquire()
+    async with scheduler_without_bucket.request():
+        assert not scheduler_without_bucket.can_acquire()
+        task_group.start_soon(schedule_additional)
+        await checkpoints(4)
+        assert not additional_called
+    await checkpoints(2)
+    assert additional_called
 
 
 @pytest.mark.anyio
@@ -199,20 +199,47 @@ async def test_cancel_pending_task(
     task_group: TaskGroup,
     fast_forward: FastForward,
 ) -> None:
-    await scheduler.request(capacity).__aenter__()
-    schedule_to_cancel, to_cancel_called = _prepare_request(scheduler)
-    schedule_other, other_called = _prepare_request(scheduler)
+    async with scheduler.request(capacity):
+        schedule_to_cancel, to_cancel_called = _prepare_request(scheduler)
+        schedule_other, other_called = _prepare_request(scheduler)
 
-    async with create_task_group() as other_task_group:
-        other_task_group.start_soon(schedule_to_cancel, capacity, Priority.HIGH)
-        task_group.start_soon(schedule_other, capacity, Priority.LOW)
-        await checkpoints(4)
-        other_task_group.cancel_scope.cancel()
+        async with create_task_group() as other_task_group:
+            other_task_group.start_soon(schedule_to_cancel, capacity, Priority.HIGH)
+            task_group.start_soon(schedule_other, capacity, Priority.LOW)
+            await checkpoints(4)
+            other_task_group.cancel_scope.cancel()
 
-    await fast_forward(duration)
-    await checkpoints(3)
-    assert not to_cancel_called
-    assert other_called
+        await fast_forward(duration)
+        await checkpoints(3)
+        assert not to_cancel_called
+        assert other_called
+
+
+@pytest.mark.anyio
+async def test_adding_new_request_during_processing(
+    scheduler: Scheduler,
+    capacity: float,
+    duration: float,
+    task_group: TaskGroup,
+    any_token: float,
+    fast_forward: FastForward,
+) -> None:
+    async with scheduler.request(capacity):
+        schedule_first, first_called = _prepare_request(scheduler)
+        schedule_other, other_called = _prepare_request(scheduler)
+        schedule_in_between, in_between_called = _prepare_request(scheduler)
+        task_group.start_soon(schedule_first, any_token, Priority.NORMAL)
+        task_group.start_soon(schedule_other, any_token, Priority.NORMAL)
+
+        await fast_forward(duration)
+        await checkpoints(2)
+        assert first_called
+        assert not other_called
+        task_group.start_soon(schedule_in_between, any_token, Priority.HIGH)
+
+        await checkpoints(1)
+        assert not other_called
+        assert in_between_called
 
 
 @pytest.mark.anyio
@@ -231,7 +258,7 @@ async def test_multiple_buckets(mock_buckets: Collection[Mock], any_token: float
 
 
 @pytest.mark.anyio
-async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
+async def test_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
     async with Scheduler(*mock_buckets, should_enter_context=True):
         for bucket in mock_buckets:
             bucket.__aenter__.assert_awaited_once()
@@ -249,16 +276,19 @@ async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> N
 
 
 @pytest.mark.anyio
-async def test_repr(mock_bucket: Mock, max_concurrency: int, max_pending: int) -> None:
+async def test_repr(mock_bucket: Mock, should_enter_context: bool, max_concurrency: int, max_pending: int) -> None:
     scheduler = Scheduler(
-        mock_bucket, should_enter_context=True, max_concurrency=max_concurrency, max_pending=max_pending
+        mock_bucket,
+        should_enter_context=should_enter_context,
+        max_concurrency=max_concurrency,
+        max_pending=max_pending,
     )
-    assert (
-        repr(scheduler) == f'Scheduler({mock_bucket!r}, should_enter_context=True, {max_concurrency=}, {max_pending=})'
-    )
+    assert repr(scheduler) == f'Scheduler({mock_bucket!r}, {should_enter_context=}, {max_concurrency=}, {max_pending=})'
 
 
 @pytest.mark.anyio
-async def test_repr_without_bucket(max_concurrency: int, max_pending: int) -> None:
-    scheduler = Scheduler(max_concurrency=max_concurrency, max_pending=max_pending)
+async def test_repr_without_bucket(should_enter_context: bool, max_concurrency: int, max_pending: int) -> None:
+    scheduler = Scheduler(
+        should_enter_context=should_enter_context, max_concurrency=max_concurrency, max_pending=max_pending
+    )
     assert repr(scheduler) == f'Scheduler({max_concurrency=}, {max_pending=})'

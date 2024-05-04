@@ -30,10 +30,10 @@ class Request(Comparable):
         Args:
             cost: The number of tokens requested.
         """
+        super().__init__(**kwargs)
         self.cost = cost
         self._validation_event = Event()
         self._ack_event = Event()
-        super().__init__(**kwargs)
 
     @override
     def __lt__(self, other: Self) -> bool:

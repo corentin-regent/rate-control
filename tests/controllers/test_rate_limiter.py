@@ -44,10 +44,7 @@ async def test_argument_validation(some_negative_int: int, some_positive_int: in
 async def test_simple_rate_limiting(
     rate_limiter: RateLimiter, mock_bucket: Mock, some_tokens: float, any_token: float
 ) -> None:
-    def can_acquire(tokens: float) -> bool:
-        return tokens <= some_tokens
-
-    mock_bucket.can_acquire = can_acquire
+    mock_bucket.can_acquire = lambda tokens: tokens <= some_tokens
 
     assert rate_limiter.can_acquire(some_tokens)
     assert not rate_limiter.can_acquire(some_tokens + any_token)
@@ -87,7 +84,7 @@ async def test_multiple_buckets(mock_buckets: Collection[Mock], any_token: float
 
 
 @pytest.mark.anyio
-async def test_enter_buckets_context(mock_buckets: Collection[Mock]) -> None:
+async def test_entering_buckets_context(mock_buckets: Collection[Mock]) -> None:
     async with RateLimiter(*mock_buckets, should_enter_context=True):
         for bucket in mock_buckets:
             bucket.__aenter__.assert_awaited_once()
@@ -105,12 +102,12 @@ async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> N
 
 
 @pytest.mark.anyio
-async def test_repr(mock_bucket: Bucket, max_concurrency: int) -> None:
-    scheduler = RateLimiter(mock_bucket, should_enter_context=False, max_concurrency=max_concurrency)
-    assert repr(scheduler) == f'RateLimiter({mock_bucket!r}, should_enter_context=False, {max_concurrency=})'
+async def test_repr(mock_bucket: Bucket, max_concurrency: int, should_enter_context: bool) -> None:
+    scheduler = RateLimiter(mock_bucket, should_enter_context=should_enter_context, max_concurrency=max_concurrency)
+    assert repr(scheduler) == f'RateLimiter({mock_bucket!r}, {should_enter_context=}, {max_concurrency=})'
 
 
 @pytest.mark.anyio
-async def test_repr_without_bucket(max_concurrency: int) -> None:
-    scheduler = RateLimiter(max_concurrency=max_concurrency)
+async def test_repr_without_bucket(max_concurrency: int, should_enter_context: bool) -> None:
+    scheduler = RateLimiter(max_concurrency=max_concurrency, should_enter_context=should_enter_context)
     assert repr(scheduler) == f'RateLimiter({max_concurrency=})'

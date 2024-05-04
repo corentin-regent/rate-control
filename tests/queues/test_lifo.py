@@ -1,6 +1,5 @@
 import sys
 from itertools import chain
-from typing import Any
 
 import pytest
 
@@ -14,21 +13,16 @@ else:
 
 
 @pytest.fixture
-def elements() -> Sequence[Any]:
-    return (123.456, 'test', -42, Any)
+def queue(any_elements: Iterable[object]) -> LifoQueue[object]:
+    return LifoQueue(*any_elements)
 
 
-@pytest.fixture
-def queue(elements: Iterable[Any]) -> LifoQueue[Any]:
-    return LifoQueue(*elements)
-
-
-def test_nominal(queue: LifoQueue[Any], elements: Sequence[Any]) -> None:
-    latest_elems = ['first', 'second']
+def test_nominal(queue: LifoQueue[object], any_elements: Sequence[object]) -> None:
+    latest_elems = ('first', b'second')
     for elem in latest_elems:
         queue.add(elem)
 
-    for elem in chain(reversed(latest_elems), reversed(elements)):
+    for elem in chain(reversed(latest_elems), reversed(any_elements)):
         assert queue
         assert queue.head() == elem
         assert queue.pop() == elem
@@ -40,8 +34,8 @@ def test_nominal(queue: LifoQueue[Any], elements: Sequence[Any]) -> None:
         queue.pop()
 
 
-def test_removing_elements(queue: LifoQueue[Any], elements: Sequence[Any]) -> None:
-    last_elem = elements[-1]
+def test_removing_any_elements(queue: LifoQueue[object], any_elements: Sequence[object]) -> None:
+    last_elem = any_elements[-1]
     assert queue.head() == last_elem
 
     queue.remove(last_elem)

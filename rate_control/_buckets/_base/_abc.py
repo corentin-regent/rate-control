@@ -7,7 +7,6 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 from rate_control._errors import RateLimit
-from rate_control._helpers import mk_repr
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -15,9 +14,9 @@ else:
     from typing_extensions import Self
 
 if sys.version_info >= (3, 12):
-    from typing import override
+    pass
 else:
-    from typing_extensions import override
+    pass
 
 
 class Bucket(ABC):
@@ -37,10 +36,6 @@ class Bucket(ABC):
 
         It may for example cancel internal background tasks.
         """
-
-    @override
-    def __repr__(self) -> str:
-        return mk_repr(self)
 
     @abstractmethod
     async def wait_for_refill(self) -> None:

@@ -12,7 +12,8 @@ Key Features
 * :doc:`Request synchronization </synchronization>`
 * :ref:`Request prioritization <prioritization>`
 * :doc:`Chaining buckets </bucket-groups>`
-* Support for both asyncio_ and Trio_, through AnyIO_
+* Supports task cancellation
+* Supports both asyncio_ and Trio_, through AnyIO_
 
 .. _AnyIO: https://github.com/agronholm/anyio
 .. _asyncio: https://docs.python.org/3/library/asyncio.html

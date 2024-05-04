@@ -61,7 +61,11 @@ async def test_refill_delay(bucket: LeakyBucket, delay: float, fast_forward: Fas
 
 @pytest.mark.anyio
 async def test_wait_for_refill(
-    bucket: LeakyBucket, delay: float, fast_forward: FastForward, tiny_delay: float, task_group: TaskGroup
+    bucket: LeakyBucket,
+    delay: float,
+    fast_forward: FastForward,
+    tiny_delay: float,
+    task_group: TaskGroup,
 ) -> None:
     refilled = False
 
