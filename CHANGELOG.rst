@@ -6,6 +6,11 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
+Nothing changed yet.
+
+4.1.0
+-----
+
 * Added the ``NoopController`` controller, that simply lets requests through.
 
 * Improved the performance of the ``Scheduler`` by better
