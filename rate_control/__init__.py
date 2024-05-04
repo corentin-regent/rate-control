@@ -4,6 +4,7 @@ __all__ = [
     'Duration',
     'FixedWindowCounter',
     'LeakyBucket',
+    'NoopController',
     'Priority',
     'RateController',
     'RateLimit',
@@ -15,6 +16,6 @@ __all__ = [
 
 from rate_control._bucket_group import BucketGroup
 from rate_control._buckets import Bucket, FixedWindowCounter, LeakyBucket, SlidingWindowLog
-from rate_control._controllers import RateController, RateLimiter, Scheduler
+from rate_control._controllers import NoopController, RateController, RateLimiter, Scheduler
 from rate_control._enums import Duration, Priority
 from rate_control._errors import RateLimit, ReachedMaxPending

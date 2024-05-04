@@ -10,3 +10,6 @@ Controllers
 
 .. autoclass:: rate_control.Scheduler
     :no-inherited-members:
+
+.. autoclass:: rate_control.NoopController
+    :no-inherited-members:
