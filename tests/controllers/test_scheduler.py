@@ -216,6 +216,31 @@ async def test_cancel_pending_task(
 
 
 @pytest.mark.anyio
+async def test_adding_new_request_during_processing(
+    scheduler: Scheduler,
+    capacity: float,
+    duration: float,
+    task_group: TaskGroup,
+    any_token: float,
+    fast_forward: FastForward,
+) -> None:
+    await scheduler.request(capacity).__aenter__()
+    schedule_first, first_called = _prepare_request(scheduler)
+    schedule_other, other_called = _prepare_request(scheduler)
+    schedule_in_between, in_between_called = _prepare_request(scheduler)
+    task_group.start_soon(schedule_first, any_token, Priority.NORMAL)
+    task_group.start_soon(schedule_other, any_token, Priority.NORMAL)
+    await fast_forward(duration)
+    await checkpoints(2)
+    assert first_called
+    assert not other_called
+    task_group.start_soon(schedule_in_between, any_token, Priority.HIGH)
+    await checkpoints(1)
+    assert not other_called
+    assert in_between_called
+
+
+@pytest.mark.anyio
 async def test_not_entering_context(mock_bucket: Bucket) -> None:
     scheduler = Scheduler(mock_bucket)
     with pytest.raises(RuntimeError):

@@ -18,7 +18,7 @@ else:
 class SubTests:
     @contextmanager
     def test(self, msg: Optional[str] = None, **kwargs: Any) -> Iterator[None]:
-        yield
+        yield  # pragma: no cover
 
 
 @pytest.mark.slow
