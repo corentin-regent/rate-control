@@ -6,7 +6,9 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
-Nothing changed yet.
+* Improved the performance of the ``Scheduler`` by better
+  detecting availability conditions for queued requests,
+  thus no longer requiring an internal lock.
 
 4.0.0
 -----
