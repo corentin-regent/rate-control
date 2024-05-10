@@ -6,6 +6,11 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
+Nothing changed yet.
+
+4.1.1
+-----
+
 A ``RuntimeError`` is now raised when entering context managers more than once,
 for objects for which it would cause undefined behavior.
 Impacted classes are the following:
