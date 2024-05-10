@@ -24,6 +24,11 @@ class ContextAware(AbstractAsyncContextManager[Any], ABC):
 
     @override
     async def __aenter__(self) -> Any:
+        """Sets the state of the context manager to :py:enum:mem:`State.ENTERED`.
+
+        Raises:
+            RuntimeError: The context manager has already been entered.
+        """
         if self._state is not State.UNENTERED:
             raise RuntimeError(
                 'Cannot enter the context manager more than once.'
@@ -35,5 +40,6 @@ class ContextAware(AbstractAsyncContextManager[Any], ABC):
 
     @override
     async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
+        """Sets the state of the context manager to :py:enum:mem:`State.CLOSED`."""
         self._state = State.CLOSED
         return await super().__aexit__(*exc_info)

@@ -28,14 +28,14 @@ Miscellaneous
 
 .. autoclass:: rate_control._helpers.Request
 
-.. autoclass:: rate_control._helpers.ContextAware
-
 .. autoclass:: rate_control._helpers._protocols.Comparable
+
+.. autoclass:: rate_control._helpers.ContextAware
 
 Enumerations
 ------------
 
-.. autoenum:: rate_control._enum.State
+.. autoenum:: rate_control._enums.State
     :no-inherited-members:
 
 Exceptions
