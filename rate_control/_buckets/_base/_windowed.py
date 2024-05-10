@@ -18,8 +18,6 @@ else:
 class BaseWindowedTokenBucket(BaseRateBucket, ABC):
     """Base class for token buckets that follow strategies based on time windows."""
 
-    __slots__ = ()
-
     def __init__(self, capacity: float, duration: float, **kwargs: Any) -> None:
         """
         Args:

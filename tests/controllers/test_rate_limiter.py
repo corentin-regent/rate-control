@@ -102,6 +102,24 @@ async def test_not_entering_buckets_context(mock_buckets: Collection[Mock]) -> N
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times(fixed_window_counter: Bucket, capacity: float, any_token: float) -> None:
+    async with RateLimiter(fixed_window_counter, should_enter_context=False) as rate_limiter:
+        async with rate_limiter.request(capacity / 2):
+            pass
+
+        async with rate_limiter:
+            assert rate_limiter.can_acquire(capacity / 2)
+            async with rate_limiter.request(capacity / 2):
+                pass
+
+        async with rate_limiter:
+            assert not rate_limiter.can_acquire(any_token)
+            with pytest.raises(RateLimit):
+                async with rate_limiter.request(any_token):
+                    ...
+
+
+@pytest.mark.anyio
 async def test_repr(mock_bucket: Bucket, max_concurrency: int, should_enter_context: bool) -> None:
     scheduler = RateLimiter(mock_bucket, should_enter_context=should_enter_context, max_concurrency=max_concurrency)
     assert repr(scheduler) == f'RateLimiter({mock_bucket!r}, {should_enter_context=}, {max_concurrency=})'

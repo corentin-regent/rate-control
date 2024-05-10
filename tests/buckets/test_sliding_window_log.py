@@ -199,5 +199,16 @@ def test_not_entering_context(capacity: float, duration: float, any_token: float
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times(capacity: float, duration: float) -> None:
+    async with SlidingWindowLog(capacity, duration) as bucket:
+        with pytest.raises(RuntimeError):
+            async with bucket:
+                ...
+    with pytest.raises(RuntimeError):
+        async with bucket:
+            ...
+
+
+@pytest.mark.anyio
 async def test_repr(bucket: SlidingWindowLog, capacity: float, duration: float) -> None:
     assert repr(bucket) == f'SlidingWindowLog({capacity=}, {duration=})'

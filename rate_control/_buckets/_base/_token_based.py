@@ -18,8 +18,6 @@ else:
 class TokenBasedBucket(Bucket, ABC):
     """Base class for buckets that monitor the requests using tokens."""
 
-    __slots__ = ('_capacity', '_tokens')
-
     def __init__(self, capacity: float, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         validate_capacity(capacity)

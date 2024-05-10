@@ -4,12 +4,12 @@ __all__ = [
 
 import sys
 from contextlib import AsyncExitStack, suppress
-from typing import Any, Iterator
+from typing import Any, Iterator, Optional
 
 from anyio import WouldBlock, create_memory_object_stream, create_task_group
 
 from rate_control._buckets import Bucket
-from rate_control._helpers import mk_repr
+from rate_control._helpers import ContextAware, mk_repr
 
 if sys.version_info >= (3, 9):
     from collections.abc import Iterable
@@ -27,18 +27,8 @@ else:
     from typing_extensions import override
 
 
-class BucketGroup(Bucket, Iterable[Bucket]):
-    """Bucket that aggregates other buckets."""
-
-    __slots__ = (
-        '_buckets',
-        '_recv_stream',
-        '_refill_event',
-        '_send_stream',
-        '_should_enter_context',
-        '_stack',
-        '_task_group',
-    )
+class BucketGroup(ContextAware, Bucket, Iterable[Bucket]):
+    """Composite bucket that aggregates other buckets."""
 
     def __init__(self, *buckets: Bucket, should_enter_context: bool = True, **kwargs: Any) -> None:
         """
@@ -59,15 +49,17 @@ class BucketGroup(Bucket, Iterable[Bucket]):
 
     @override
     async def __aenter__(self) -> Self:
+        await super().__aenter__()
         self._stack = await AsyncExitStack().__aenter__()
         self._task_group = await self._stack.enter_async_context(create_task_group())
         await self._init_buckets()
         return self
 
     @override
-    async def __aexit__(self, *exc_info: Any) -> None:
+    async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
         self._task_group.cancel_scope.cancel()
         await self._stack.__aexit__(*exc_info)
+        return await super().__aexit__(*exc_info)
 
     @override
     def __iter__(self) -> Iterator[Bucket]:

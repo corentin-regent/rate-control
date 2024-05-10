@@ -178,5 +178,16 @@ def test_not_entering_context(capacity: float, duration: float, any_token: float
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times(capacity: float, duration: float) -> None:
+    async with FixedWindowCounter(capacity, duration) as bucket:
+        with pytest.raises(RuntimeError):
+            async with bucket:
+                ...
+    with pytest.raises(RuntimeError):
+        async with bucket:
+            ...
+
+
+@pytest.mark.anyio
 async def test_repr(bucket: FixedWindowCounter, capacity: float, duration: float) -> None:
     assert repr(bucket) == f'FixedWindowCounter({capacity=}, {duration=})'
