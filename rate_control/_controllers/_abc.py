@@ -21,8 +21,6 @@ else:
 class RateController(ABC):
     """Abstract base class for rate controllers."""
 
-    __slots__ = ()
-
     async def __aenter__(self) -> Self:
         """Enter the controller's context."""
         return self

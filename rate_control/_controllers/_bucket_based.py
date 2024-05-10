@@ -33,8 +33,6 @@ else:
 class BucketBasedRateController(RateController, ABC):
     """Mixin for rate controllers that use buckets."""
 
-    __slots__ = ('_bucket', '_concurrent_requests', '_max_concurrency', '_should_enter_context')
-
     def __init__(
         self,
         *buckets: Bucket,

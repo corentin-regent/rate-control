@@ -10,10 +10,11 @@ from anyio import create_task_group, get_cancelled_exc_class
 from anyio.lowlevel import checkpoint
 
 from rate_control._buckets import Bucket
+from rate_control._controllers._abc import RateController
 from rate_control._controllers._bucket_based import BucketBasedRateController
-from rate_control._enums import Priority
+from rate_control._enums import Priority, State
 from rate_control._errors import RateLimit, ReachedMaxPending
-from rate_control._helpers import Request, mk_repr
+from rate_control._helpers import ContextAware, Request, mk_repr
 from rate_control._helpers._validation import validate_max_pending
 from rate_control.queues import PriorityQueue, Queue
 
@@ -33,10 +34,8 @@ else:
     from typing_extensions import override
 
 
-class Scheduler(BucketBasedRateController):
+class Scheduler(BucketBasedRateController, ContextAware, RateController):
     """Rate controller that schedules requests for later processing."""
-
-    __slots__ = ('_max_pending', '_pending_requests', '_queues', '_task_group')
 
     def __init__(
         self,
@@ -131,8 +130,10 @@ class Scheduler(BucketBasedRateController):
                 but the ``fill_or_kill`` flag was set to `True`.
             ReachedMaxPending: The limit of pending requests was reached.
         """
-        if not hasattr(self, '_task_group'):
-            raise RuntimeError(f"Make sure to enter the scheduler's context using 'async with {self}'")
+        if self._state is not State.ENTERED:
+            raise RuntimeError(
+                f"Make sure to enter the scheduler's context using 'async with {type(self).__name__}(...)'"
+            )
         if not self.can_acquire(tokens):
             if fill_or_kill:
                 raise RateLimit(f'Cannot process the request for {tokens} tokens.')

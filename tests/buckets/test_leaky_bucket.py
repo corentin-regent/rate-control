@@ -91,5 +91,16 @@ def test_not_entering_context(delay: float) -> None:
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times(delay: float) -> None:
+    async with LeakyBucket(delay) as bucket:
+        with pytest.raises(RuntimeError):
+            async with bucket:
+                ...
+    with pytest.raises(RuntimeError):
+        async with bucket:
+            ...
+
+
+@pytest.mark.anyio
 async def test_repr(bucket: LeakyBucket, delay: float) -> None:
     assert repr(bucket) == f'LeakyBucket({delay=})'

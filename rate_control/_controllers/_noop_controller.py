@@ -23,8 +23,6 @@ else:
 class NoopController(RateController):
     """Rate controller that accepts all requests and does nothing."""
 
-    __slots__ = ()
-
     _instance: ClassVar['NoopController']
 
     def __new__(cls, *_: Any, **kwargs: Any) -> 'NoopController':
@@ -34,7 +32,7 @@ class NoopController(RateController):
 
         Note:
             Implementation detail: The ``__new__`` method returns
-            a singleton instance, for optimal memory usage.
+            a singleton instance, for better memory management.
         """
         try:
             return cls._instance

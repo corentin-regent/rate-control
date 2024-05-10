@@ -22,8 +22,6 @@ else:
 class RateLimiter(BucketBasedRateController):
     """Rate controller that raises an error if a request cannot be fulfilled instantly."""
 
-    __slots__ = ()
-
     @asynccontextmanager
     @override
     async def request(self, tokens: float = 1, **_: Any) -> AsyncIterator[None]:

@@ -251,6 +251,17 @@ async def test_not_entering_context(mock_bucket: Bucket) -> None:
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times() -> None:
+    async with Scheduler() as scheduler:
+        with pytest.raises(RuntimeError):
+            async with scheduler:
+                ...
+    with pytest.raises(RuntimeError):
+        async with scheduler:
+            ...
+
+
+@pytest.mark.anyio
 async def test_multiple_buckets(mock_buckets: Collection[Mock], any_token: float) -> None:
     async with Scheduler(*mock_buckets, should_enter_context=False) as scheduler, scheduler.request(any_token):
         for bucket in mock_buckets:

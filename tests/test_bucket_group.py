@@ -94,6 +94,17 @@ async def test_wait_for_refill(
 
 
 @pytest.mark.anyio
+async def test_entering_context_multiple_times() -> None:
+    async with BucketGroup() as bucket_group:
+        with pytest.raises(RuntimeError):
+            async with bucket_group:
+                ...
+    with pytest.raises(RuntimeError):
+        async with bucket_group:
+            ...
+
+
+@pytest.mark.anyio
 async def test_iter(mocked_bucket_group: BucketGroup, mock_buckets: Collection[Mock]) -> None:
     assert set(mocked_bucket_group) == set(mock_buckets)
     assert len(set(mocked_bucket_group)) == len(mock_buckets)

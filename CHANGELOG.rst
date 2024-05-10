@@ -6,7 +6,26 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
-Nothing changed yet.
+A ``RuntimeError`` is now raised when entering context managers more than once,
+for objects for which it would cause undefined behavior.
+Impacted classes are the following:
+
+* Buckets:
+
+  * ``FixedWindowCounter``
+
+  * ``LeakyBucket``
+
+  * ``SlidingWindowLog``
+
+  * ``BucketGroup``
+
+* Rate Controllers (not considering the underlying buckets):
+
+  * ``Scheduler``
+
+The ``__slots__`` attribute was removed from all buckets and rate controllers,
+for `practical reasons <https://stackoverflow.com/a/53089249>`_.
 
 4.1.0
 -----

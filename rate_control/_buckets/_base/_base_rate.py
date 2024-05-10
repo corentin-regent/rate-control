@@ -8,7 +8,9 @@ from typing import Any, Optional
 
 from anyio import Event, create_task_group, sleep
 
+from rate_control._buckets._base._abc import Bucket
 from rate_control._buckets._base._token_based import TokenBasedBucket
+from rate_control._helpers import ContextAware
 from rate_control._helpers._validation import validate_delay
 
 if sys.version_info >= (3, 11):
@@ -22,10 +24,8 @@ else:
     from typing_extensions import override
 
 
-class BaseRateBucket(TokenBasedBucket, ABC):
+class BaseRateBucket(TokenBasedBucket, ContextAware, Bucket, ABC):
     """Base class for token buckets that refill at a certain rate."""
-
-    __slots__ = ('_delay', '_refill_event', '_task_group')
 
     def __init__(self, capacity: float, delay: float, **kwargs: Any) -> None:
         """
@@ -40,8 +40,9 @@ class BaseRateBucket(TokenBasedBucket, ABC):
 
     @override
     async def __aenter__(self) -> Self:
+        await super().__aenter__()
         self._task_group = await create_task_group().__aenter__()
-        return await super().__aenter__()
+        return self
 
     @override
     async def __aexit__(self, *exc_info: Any) -> Optional[bool]:
