@@ -4,10 +4,17 @@ __all__ = [
 
 import sys
 from abc import ABC
-from contextlib import AbstractAsyncContextManager
 from typing import Any, Optional
 
 from rate_control._enums import State
+
+if sys.version_info >= (3, 9):
+    from contextlib import AbstractAsyncContextManager as _AbstractAsyncContextManager
+
+    class AbstractAsyncContextManager(_AbstractAsyncContextManager[Any]): ...
+else:
+    from contextlib import AbstractAsyncContextManager
+
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -15,7 +22,7 @@ else:
     from typing_extensions import override
 
 
-class ContextAware(AbstractAsyncContextManager[Any], ABC):
+class ContextAware(AbstractAsyncContextManager, ABC):
     """Mixin for raising an exception if the async context manager is entered more than once."""
 
     def __init__(self, **kwargs: Any) -> None:
