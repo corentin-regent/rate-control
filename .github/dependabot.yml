@@ -12,6 +12,18 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      dev-security:
+        dependency-type: "development"
+        applies-to: security-updates
+        update-types:
+          - "minor"
+          - "patch"
+      prod-security:
+        dependency-type: "production"
+        applies-to: security-updates
+        update-types:
+          - "minor"
+          - "patch"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
