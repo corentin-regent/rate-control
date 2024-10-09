@@ -4,6 +4,7 @@ __all__ = [
 
 import sys
 from abc import ABC
+from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any, Optional
 
@@ -13,11 +14,6 @@ from rate_control._controllers._abc import RateController
 from rate_control._errors import RateLimit
 from rate_control._helpers import mk_repr
 from rate_control._helpers._validation import validate_max_concurrency
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Iterator
-else:
-    from typing import Iterator
 
 if sys.version_info >= (3, 11):
     from typing import Self

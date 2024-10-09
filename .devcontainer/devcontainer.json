@@ -1,6 +1,6 @@
 {
   "name": "corentin-regent/rate-control",
-  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/python:3-bookworm",
   "postCreateCommand": "make setup",
   "features": {
     "ghcr.io/devcontainers-contrib/features/poetry:2": {}
@@ -8,7 +8,6 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "charliermarsh.ruff",
         "github.vscode-github-actions",
         "ms-python.python",
         "njpwerner.autodocstring",
@@ -18,12 +17,7 @@
       ],
       "settings": {
         "autoDocstring.docstringFormat": "google-notypes",
-        "editor.codeActionsOnSave": {
-          "source.fixAll": "always",
-          "source.organizeImports": "always"
-        },
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": false,
         "python.analysis.packageIndexDepths": [
           {
             "name": "anyio",
@@ -31,9 +25,9 @@
           }
         ],
         "python.testing.pytestArgs": [
-            "-v",
-            "--runslow",
-            "tests/"
+          "-v",
+          "--runslow",
+          "tests/"
         ],
         "python.testing.pytestEnabled": true,
         "python.testing.unittestEnabled": false

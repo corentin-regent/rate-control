@@ -6,7 +6,8 @@ This library adheres to `Semantic Versioning 2.0 <http://semver.org/>`_.
 Unreleased
 ----------
 
-Nothing changed yet.
+* Add support for Python 3.13
+* Drop support for Python 3.8
 
 4.1.1
 -----

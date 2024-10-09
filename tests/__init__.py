@@ -2,15 +2,10 @@ __all__ = [
     'assert_not_raises',
 ]
 
-import sys
+from collections.abc import Iterator
 from contextlib import contextmanager
 
 from anyio.lowlevel import checkpoint
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Iterator
-else:
-    from typing import Iterator
 
 
 @contextmanager

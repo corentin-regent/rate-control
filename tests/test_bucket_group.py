@@ -1,4 +1,4 @@
-import sys
+from collections.abc import AsyncIterator, Collection, Iterable
 from unittest.mock import Mock
 
 import pytest
@@ -8,11 +8,6 @@ from anyio.abc import TaskGroup
 
 from rate_control import Bucket, BucketGroup, RateLimit
 from tests import checkpoints
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Collection, Iterable
-else:
-    from typing import AsyncIterator, Collection, Iterable
 
 
 @pytest.fixture

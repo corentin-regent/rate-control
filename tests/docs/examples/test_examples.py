@@ -1,5 +1,5 @@
 import os.path
-import sys
+from collections.abc import Iterator
 from contextlib import contextmanager, redirect_stdout
 from importlib import import_module
 from io import StringIO
@@ -7,12 +7,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 import pytest
-
-if sys.version_info >= (3, 9):
-    from builtins import tuple as Tuple
-    from collections.abc import Iterator
-else:
-    from typing import Iterator, Tuple
 
 
 class SubTests:
@@ -34,7 +28,7 @@ def test_examples(subtests: SubTests) -> None:
             assert actual == expected
 
 
-def _python_and_output_files() -> Iterator[Tuple[Path, Path]]:
+def _python_and_output_files() -> Iterator[tuple[Path, Path]]:
     for output_file in Path('docs/examples').glob('**/*.out'):
         for lib in ('asyncio', 'trio', 'anyio'):
             python_file = Path(f'{output_file.with_suffix("")}_{lib}.py')

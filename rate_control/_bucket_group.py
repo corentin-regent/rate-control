@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 import sys
+from collections.abc import Iterable
 from contextlib import AsyncExitStack, suppress
 from typing import Any, Iterator, Optional
 
@@ -10,11 +11,6 @@ from anyio import WouldBlock, create_memory_object_stream, create_task_group
 
 from rate_control._buckets import Bucket
 from rate_control._helpers import ContextAware, mk_repr
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Iterable
-else:
-    from typing import Iterable
 
 if sys.version_info >= (3, 11):
     from typing import Self

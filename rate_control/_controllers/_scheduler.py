@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 import sys
+from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager, suppress
 from typing import Any, NoReturn, Optional
 
@@ -17,11 +18,6 @@ from rate_control._errors import RateLimit, ReachedMaxPending
 from rate_control._helpers import ContextAware, Request, mk_repr
 from rate_control._helpers._validation import validate_max_pending
 from rate_control.queues import PriorityQueue, Queue
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Callable
-else:
-    from typing import AsyncIterator, Callable
 
 if sys.version_info >= (3, 11):
     from typing import Self

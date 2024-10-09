@@ -1,4 +1,4 @@
-import sys
+from collections.abc import AsyncIterator
 
 import pytest
 from aiofastforward import FastForward
@@ -8,11 +8,6 @@ from anyio.lowlevel import checkpoint
 from rate_control import RateLimit
 from rate_control._buckets import LeakyBucket
 from tests import assert_not_raises, checkpoints
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator
-else:
-    from typing import AsyncIterator
 
 
 @pytest.fixture
