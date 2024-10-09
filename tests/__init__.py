@@ -2,7 +2,6 @@ __all__ = [
     'assert_not_raises',
 ]
 
-import sys
 from collections.abc import Iterator
 from contextlib import contextmanager
 
