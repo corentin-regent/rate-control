@@ -290,8 +290,7 @@ async def test_repr(mock_bucket: Mock, should_enter_context: bool, max_concurren
         max_concurrency=max_concurrency,
         max_pending=max_pending,
     )
-    assert repr(scheduler) == f'Scheduler({mock_bucket!r}, {
-        should_enter_context=}, {max_concurrency=}, {max_pending=})'
+    assert repr(scheduler) == f'Scheduler({mock_bucket!r}, {should_enter_context=}, {max_concurrency=}, {max_pending=})'
 
 
 @pytest.mark.anyio

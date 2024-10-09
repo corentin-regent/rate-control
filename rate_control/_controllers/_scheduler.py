@@ -129,13 +129,11 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
         """
         if self._state is not State.ENTERED:
             raise RuntimeError(
-                f"Make sure to enter the scheduler's context using 'async with {
-                    type(self).__name__}(...)'"
+                f"Make sure to enter the scheduler's context using 'async with {type(self).__name__}(...)'"
             )
         if not self.can_acquire(tokens):
             if fill_or_kill:
-                raise RateLimit(f'Cannot process the request for {
-                                tokens} tokens.')
+                raise RateLimit(f'Cannot process the request for {tokens} tokens.')
             else:
                 await self._schedule_request(tokens, priority)
         if self._bucket is not None:
