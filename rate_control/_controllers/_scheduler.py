@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 import sys
+from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager, suppress
 from typing import Any, NoReturn, Optional
 
@@ -17,11 +18,6 @@ from rate_control._errors import RateLimit, ReachedMaxPending
 from rate_control._helpers import ContextAware, Request, mk_repr
 from rate_control._helpers._validation import validate_max_pending
 from rate_control.queues import PriorityQueue, Queue
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Callable
-else:
-    from typing import AsyncIterator, Callable
 
 if sys.version_info >= (3, 11):
     from typing import Self
@@ -59,7 +55,8 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
             queue_factory: The factory for initializing the request queues.
                 Defaults to :class:`.PriorityQueue`: requests are processed by ascending weight.
         """
-        super().__init__(*buckets, should_enter_context=should_enter_context, max_concurrency=max_concurrency, **kwargs)
+        super().__init__(*buckets, should_enter_context=should_enter_context,
+                         max_concurrency=max_concurrency, **kwargs)
         validate_max_pending(max_pending)
         self._max_pending = max_pending
         self._pending_requests = 0
@@ -132,11 +129,13 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
         """
         if self._state is not State.ENTERED:
             raise RuntimeError(
-                f"Make sure to enter the scheduler's context using 'async with {type(self).__name__}(...)'"
+                f"Make sure to enter the scheduler's context using 'async with {
+                    type(self).__name__}(...)'"
             )
         if not self.can_acquire(tokens):
             if fill_or_kill:
-                raise RateLimit(f'Cannot process the request for {tokens} tokens.')
+                raise RateLimit(f'Cannot process the request for {
+                                tokens} tokens.')
             else:
                 await self._schedule_request(tokens, priority)
         if self._bucket is not None:
@@ -152,7 +151,8 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
     async def _process_queued_requests(self) -> None:
         while True:
             try:
-                queue = next(queue for queue in filter(None, self._queues) if self.can_acquire(queue.head().cost))
+                queue = next(queue for queue in filter(
+                    None, self._queues) if self.can_acquire(queue.head().cost))
             except StopIteration:
                 break
             await self._process_next_request(queue)

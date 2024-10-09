@@ -3,16 +3,12 @@ __all__ = [
 ]
 
 import sys
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any, ClassVar, Literal
 
 from rate_control._controllers._abc import RateController
 from rate_control._helpers import mk_repr
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator
-else:
-    from typing import AsyncIterator
 
 if sys.version_info >= (3, 12):
     from typing import override

@@ -26,7 +26,7 @@ jobs:
       - name: Setup Poetry
         uses: ./.github/actions/setup
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Release
         uses: corentin-regent/poetrel@v1

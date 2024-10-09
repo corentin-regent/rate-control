@@ -1,5 +1,5 @@
 import math
-import sys
+from collections.abc import Iterable, Sequence
 from itertools import chain
 
 import pytest
@@ -7,11 +7,6 @@ import pytest
 from rate_control._errors import Empty
 from rate_control._helpers._protocols import Comparable
 from rate_control.queues import PriorityQueue
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Iterable, Sequence
-else:
-    from typing import Iterable, Sequence
 
 
 @pytest.fixture

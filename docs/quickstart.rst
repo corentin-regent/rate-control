@@ -4,8 +4,6 @@ Quickstart
 Installation
 ------------
 
-Rate Control requires Python 3.8 or later to run.
-
 The library is hosted on `PyPI <https://pypi.org/project/rate-control/>`_,
 you can install it using pip:
 

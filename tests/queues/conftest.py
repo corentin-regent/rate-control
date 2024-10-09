@@ -1,11 +1,7 @@
-import sys
+
+from collections.abc import Sequence
 
 import pytest
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Sequence
-else:
-    from typing import Sequence
 
 
 @pytest.fixture

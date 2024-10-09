@@ -1,4 +1,4 @@
-import sys
+from collections.abc import AsyncIterator, Collection
 from contextlib import AsyncExitStack
 from unittest.mock import Mock
 
@@ -6,11 +6,6 @@ import pytest
 
 from rate_control import Bucket, RateLimit, RateLimiter
 from tests import assert_not_raises
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Collection
-else:
-    from typing import AsyncIterator, Collection
 
 
 @pytest.fixture

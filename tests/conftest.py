@@ -1,6 +1,6 @@
 import secrets
-import sys
 from asyncio import get_running_loop
+from collections.abc import AsyncIterator, Sequence
 from contextlib import AsyncExitStack
 from unittest.mock import AsyncMock, Mock
 
@@ -11,11 +11,6 @@ from anyio.abc import TaskGroup
 from pytest import Function, Parser
 
 from rate_control import Bucket, FixedWindowCounter
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Sequence
-else:
-    from typing import AsyncIterator, Sequence
 
 
 def pytest_addoption(parser: Parser) -> None:

@@ -4,13 +4,9 @@ __all__ = [
 
 import sys
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any, Optional
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator
-else:
-    from typing import AsyncIterator
 
 if sys.version_info >= (3, 11):
     from typing import Self

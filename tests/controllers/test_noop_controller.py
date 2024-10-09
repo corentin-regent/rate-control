@@ -1,4 +1,4 @@
-import sys
+from collections.abc import AsyncIterator, Collection, Iterable
 from unittest.mock import Mock
 
 import pytest
@@ -6,11 +6,6 @@ from anyio import create_task_group
 
 from rate_control import Bucket, NoopController
 from tests import assert_not_raises
-
-if sys.version_info >= (3, 9):
-    from collections.abc import AsyncIterator, Collection, Iterable
-else:
-    from typing import AsyncIterator, Collection, Iterable
 
 
 @pytest.fixture

@@ -1,4 +1,4 @@
-import sys
+from collections.abc import AsyncIterator, Awaitable, Callable, Collection
 from contextlib import AsyncExitStack
 from typing import Any
 from unittest.mock import MagicMock, Mock
@@ -11,12 +11,6 @@ from anyio.lowlevel import checkpoint
 
 from rate_control import Bucket, Priority, RateLimit, ReachedMaxPending, Scheduler
 from tests import assert_not_raises, checkpoints
-
-if sys.version_info >= (3, 9):
-    from builtins import tuple as Tuple
-    from collections.abc import AsyncIterator, Awaitable, Callable, Collection
-else:
-    from typing import AsyncIterator, Awaitable, Callable, Collection, Tuple
 
 
 class _Called:
@@ -52,7 +46,7 @@ async def scheduler_without_bucket(max_concurrency: int, max_pending: int) -> As
         yield _scheduler
 
 
-def _prepare_request(scheduler: Scheduler) -> Tuple[Callable[..., Awaitable[None]], _Called]:
+def _prepare_request(scheduler: Scheduler) -> tuple[Callable[..., Awaitable[None]], _Called]:
     called = _Called()
 
     async def schedule(*args: Any) -> None:
@@ -154,7 +148,8 @@ async def test_max_concurrency(
         assert scheduler_without_bucket.can_acquire()
         await async_exit_stack.enter_async_context(scheduler_without_bucket.request())
 
-    schedule_additional, additional_called = _prepare_request(scheduler_without_bucket)
+    schedule_additional, additional_called = _prepare_request(
+        scheduler_without_bucket)
     assert scheduler_without_bucket.can_acquire()
     async with scheduler_without_bucket.request():
         assert not scheduler_without_bucket.can_acquire()
@@ -204,7 +199,8 @@ async def test_cancel_pending_task(
         schedule_other, other_called = _prepare_request(scheduler)
 
         async with create_task_group() as other_task_group:
-            other_task_group.start_soon(schedule_to_cancel, capacity, Priority.HIGH)
+            other_task_group.start_soon(
+                schedule_to_cancel, capacity, Priority.HIGH)
             task_group.start_soon(schedule_other, capacity, Priority.LOW)
             await checkpoints(4)
             other_task_group.cancel_scope.cancel()
@@ -294,7 +290,8 @@ async def test_repr(mock_bucket: Mock, should_enter_context: bool, max_concurren
         max_concurrency=max_concurrency,
         max_pending=max_pending,
     )
-    assert repr(scheduler) == f'Scheduler({mock_bucket!r}, {should_enter_context=}, {max_concurrency=}, {max_pending=})'
+    assert repr(scheduler) == f'Scheduler({mock_bucket!r}, {
+        should_enter_context=}, {max_concurrency=}, {max_pending=})'
 
 
 @pytest.mark.anyio

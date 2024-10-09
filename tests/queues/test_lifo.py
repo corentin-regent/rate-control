@@ -1,15 +1,10 @@
-import sys
+from collections.abc import Iterable, Sequence
 from itertools import chain
 
 import pytest
 
 from rate_control._errors import Empty
 from rate_control.queues import LifoQueue
-
-if sys.version_info >= (3, 9):
-    from collections.abc import Iterable, Sequence
-else:
-    from typing import Iterable, Sequence
 
 
 @pytest.fixture
