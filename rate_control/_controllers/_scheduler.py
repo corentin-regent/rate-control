@@ -55,8 +55,7 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
             queue_factory: The factory for initializing the request queues.
                 Defaults to :class:`.PriorityQueue`: requests are processed by ascending weight.
         """
-        super().__init__(*buckets, should_enter_context=should_enter_context,
-                         max_concurrency=max_concurrency, **kwargs)
+        super().__init__(*buckets, should_enter_context=should_enter_context, max_concurrency=max_concurrency, **kwargs)
         validate_max_pending(max_pending)
         self._max_pending = max_pending
         self._pending_requests = 0
@@ -149,8 +148,7 @@ class Scheduler(BucketBasedRateController, ContextAware, RateController):
     async def _process_queued_requests(self) -> None:
         while True:
             try:
-                queue = next(queue for queue in filter(
-                    None, self._queues) if self.can_acquire(queue.head().cost))
+                queue = next(queue for queue in filter(None, self._queues) if self.can_acquire(queue.head().cost))
             except StopIteration:
                 break
             await self._process_next_request(queue)

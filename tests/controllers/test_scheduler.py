@@ -148,8 +148,7 @@ async def test_max_concurrency(
         assert scheduler_without_bucket.can_acquire()
         await async_exit_stack.enter_async_context(scheduler_without_bucket.request())
 
-    schedule_additional, additional_called = _prepare_request(
-        scheduler_without_bucket)
+    schedule_additional, additional_called = _prepare_request(scheduler_without_bucket)
     assert scheduler_without_bucket.can_acquire()
     async with scheduler_without_bucket.request():
         assert not scheduler_without_bucket.can_acquire()
@@ -199,8 +198,7 @@ async def test_cancel_pending_task(
         schedule_other, other_called = _prepare_request(scheduler)
 
         async with create_task_group() as other_task_group:
-            other_task_group.start_soon(
-                schedule_to_cancel, capacity, Priority.HIGH)
+            other_task_group.start_soon(schedule_to_cancel, capacity, Priority.HIGH)
             task_group.start_soon(schedule_other, capacity, Priority.LOW)
             await checkpoints(4)
             other_task_group.cancel_scope.cancel()
